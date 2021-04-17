@@ -1,2 +1,2 @@
 <!--miniprogram/pages/produce.wxml-->
-<text>miniprogram/pages/produce.wxml</text>
+<button bindtap="scanCode" type="primary" >扫码</button>

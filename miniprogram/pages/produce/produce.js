@@ -62,5 +62,21 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  scanCode(){
+    wx.scanCode({
+      onlyFromCamera: true,
+      success (res) {
+        var result = unescape(res.result)
+        var deviceqrid = result.substring(result.indexOf('deviceqrid=')+11,result.lastIndexOf('#'))
+        console.log(deviceqrid)
+        wx.request({
+          url: getApp().globalData.host+'/api/getmac',
+          success: (result) => {
+            console.log(result.data)
+          }
+        })
+      }
+    })
   }
 })

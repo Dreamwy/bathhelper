@@ -1,4 +1,5 @@
 {
+  "setting": {},
   "condition": {
     "plugin": {
       "list": []
@@ -20,7 +21,7 @@
         {
           "name": "pages/produce/produce",
           "pathName": "pages/produce/produce",
-          "query": "",
+          "query": "deviceqrid=80:80:80:80:80:80",
           "scene": null
         }
       ]

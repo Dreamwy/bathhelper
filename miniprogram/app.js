@@ -14,6 +14,8 @@ App({
     //   })
     // }
 
-    this.globalData = {}
+    this.globalData = {
+      host:"http://127.0.0.1:4002"
+    }
   }
 })
