@@ -1,2 +1,49 @@
 <!--miniprogram/pages/produce.wxml-->
-<button bindtap="scanCode" type="primary" >扫码</button>
+<wxs module="utils">
+module.exports.max = function(n1, n2) {
+  return Math.max(n1, n2)
+}
+module.exports.len = function(arr) {
+  arr = arr || []
+  return arr.length
+}
+</wxs>
+<view class="main">
+<button bindtap="openBluetoothAdapter" size="mini" type="primary">开始扫描</button>
+<button bindtap="stopBluetoothDevicesDiscovery" size="mini" type="primary" >停止扫描</button>
+<button bindtap="closeBluetoothAdapter" size="mini" type="primary">结束流程</button>
+</view>
+
+
+<view class="devices_summary">已发现 {{devices.length}} 个外围设备：</view>
+<scroll-view class="device_list" scroll-y scroll-with-animation>
+  <view wx:for="{{devices}}" wx:key="index"
+   data-device-id="{{item.deviceId}}"
+   data-name="{{item.name || item.localName}}"
+   bindtap="createBLEConnection" 
+   class="device_item"
+   hover-class="device_item_hover">
+    <view style="font-size: 16px; color: #333;">{{item.name}}</view>
+    <view style="font-size: 10px">信号强度: {{item.RSSI}}dBm ({{utils.max(0, item.RSSI + 100)}}%)</view>
+    <view style="font-size: 10px">UUID: {{item.deviceId}}</view>
+    <view style="font-size: 10px">Service数量: {{utils.len(item.advertisServiceUUIDs)}}</view>
+  </view>
+</scroll-view>
+<view class="main">
+      <button bindtap="scanCode" type="primary" size="mini">扫码</button>
+      <button bindtap="scanCode" type="primary" size="mini">写mac</button>
+      <button bindtap="scanCode" type="primary" size="mini">写设备名称</button>
+</view>
+<view class="connected_info" wx:if="{{connected}}">
+  <view>
+    <text>已连接到 {{name}}</text>
+    
+  </view>
+  <view wx:for="{{chs}}" wx:key="index" style="font-size: 12px; margin-top: 10px;">
+    <view>特性UUID: {{item.uuid}}</view>
+    <view>特性值: {{item.value}}</view>
+  </view>
+</view>
+
+
+
