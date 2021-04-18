@@ -15,7 +15,8 @@ App({
     // }
 
     this.globalData = {
-      host:"http://127.0.0.1:4002"
+      // host:"http://127.0.0.1:4002"
+      host:"https://www.anane.net.cn"
     }
   }
 })

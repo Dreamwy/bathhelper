@@ -11,6 +11,9 @@ Page({
     devices: [],
     connected: false,
     chs: [],
+    printdata:'',
+    writemac:'',
+    writename:''
   },
 
   /**
@@ -38,7 +41,7 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    this.closeBLEConnection()
+    // this.closeBLEConnection()
   },
 
   /**
@@ -71,13 +74,19 @@ Page({
   scanCode(){
     wx.scanCode({
       onlyFromCamera: true,
-      success (res) {
+      success: (res)=> {
         var result = unescape(res.result)
         var deviceqrid = result.substring(result.indexOf('deviceqrid=')+11,result.lastIndexOf('#'))
         console.log(deviceqrid)
         wx.request({
           url: getApp().globalData.host+'/api/getmac',
+          data:{"deviceqrid":deviceqrid},
           success: (result) => {
+            this.setData({
+              printdata:"mac:"+result.data.mac+"二维码:"+result.data.deviceqrid+"蓝牙名称:"+result.data.blename+"\n",
+              writemac:result.data.mac,
+              writename:result.data.blename
+            })
             console.log(result.data)
           }
         })
@@ -236,15 +245,14 @@ Page({
       }
     })
   },
-  formWriteData(event) {
+  clickWriteData(event){
     var command = 'AT+051R1vv'
-    
     switch (parseInt(event.currentTarget.dataset.command)) {
       case 1:
         command = 'AT+051R1vv'
         break;
       case 11:
-        command = 'AT+181W1=22223FA5BE09vv'
+        command = 'AT+181W1='+writemac.replace(':','')+'vv'
         break;
       case 2:
         command = 'AT+051R2vv'
@@ -267,6 +275,12 @@ Page({
       default:
         break;
     }
+    this.formWriteData(command)
+  },
+  formWriteData(command) {
+    this.setData({
+      printdata:this.data.printdata+"发送:"+command+"\n"
+    })
     console.log("写入数据",command,command.length)
     if(command.length>20){
       var count  = Math.ceil(command.length/20)
@@ -326,6 +340,13 @@ Page({
   },
   processBLEData(data) {
     console.log("蓝牙接收组装完成数据",hexCharCodeToStr(data))
+    var backdata = hexCharCodeToStr(data)
+    this.setData({
+      printdata:this.data.printdata+"收到:"+backdata+"\n"
+    })
+    if(backdata.search('AT+182B1') != -1){
+      this.formWriteData('AT+182C1='+writemac.replace(':','')+'vv')
+    }
   }
 })
 

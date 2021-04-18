@@ -29,21 +29,26 @@ module.exports.len = function(arr) {
     <view style="font-size: 10px">Service数量: {{utils.len(item.advertisServiceUUIDs)}}</view>
   </view>
 </scroll-view>
+<view class="connected_info" wx:if="{{connected}}">
+<text>已连接到 {{name}}</text>
 <view class="main">
       <button bindtap="scanCode" type="primary" size="mini">扫码</button>
-      <button bindtap="scanCode" type="primary" size="mini">写mac</button>
+      <button bindtap="scanCode" data-command='11' type="primary" size="mini">写mac</button>
       <button bindtap="scanCode" type="primary" size="mini">写设备名称</button>
 </view>
-<view class="connected_info" wx:if="{{connected}}">
+<scroll-view class="device_list" scroll-y scroll-with-animation>
+  <text> {{printdata}}</text>
+</scroll-view>
+</view>
   <view>
-    <text>已连接到 {{name}}</text>
+    
     
   </view>
   <view wx:for="{{chs}}" wx:key="index" style="font-size: 12px; margin-top: 10px;">
     <view>特性UUID: {{item.uuid}}</view>
     <view>特性值: {{item.value}}</view>
   </view>
-</view>
+
 
 
 
