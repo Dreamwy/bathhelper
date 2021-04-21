@@ -33,7 +33,7 @@ module.exports.len = function(arr) {
 <text>已连接到 {{name}}</text>
 <view class="main">
       <button bindtap="scanCode" type="primary" size="mini">扫码</button>
-      <button bindtap="scanCode" data-command='11' type="primary" size="mini">写mac</button>
+      <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">写mac</button>
       <button bindtap="scanCode" type="primary" size="mini">写设备名称</button>
 </view>
 <scroll-view class="device_list" scroll-y scroll-with-animation>

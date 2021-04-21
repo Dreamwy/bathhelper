@@ -23,6 +23,12 @@
           "pathName": "pages/produce/produce",
           "query": "deviceqrid=80:80:80:80:80:80",
           "scene": null
+        },
+        {
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "deviceqrid=01:00:25:12:20:20",
+          "scene": null
         }
       ]
     }

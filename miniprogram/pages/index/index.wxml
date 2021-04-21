@@ -1,2 +1,3 @@
 <!--miniprogram/pages/index.wxml-->
-<button bindtap="openBluetoothAdapter" type="primary">扫码开机</button>
+<button bindtap="scanCode" type="primary">扫码开机</button>
+<button bindtap="aaa" type="primary">aaa</button>
