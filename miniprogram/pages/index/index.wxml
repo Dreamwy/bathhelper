@@ -1,3 +1,5 @@
-<!--miniprogram/pages/index.wxml-->
+
 <button bindtap="scanCode" type="primary">扫码开机</button>
-<button bindtap="aaa" type="primary">aaa</button>
+<button bindtap="open" type="primary">启动</button>
+<button bindtap="state" type="primary">状态</button>
+<button bindtap="softv" type="primary">软件版本</button>

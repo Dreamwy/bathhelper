@@ -4,6 +4,10 @@ var bleStr = ''
 var bleDataLength = 0
 var isTraversing = false
 var isFindDevice = false
+const bleopen1 = 'AT+101W7=0600vv'
+const bleopen2 = 'AT+102C7=0600vv'
+const blestate = 'AT+051R5vv'
+const blesoftv = 'AT+051R4vv'
 Page({
 
   /**
@@ -14,14 +18,18 @@ Page({
     connected: false,
     chs: [],
     blemac:'',
-    blename:''
+    blename:'',
+    deviceqrid:''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    var obj = wx.getLaunchOptionsSync()
+    if(obj.query.deviceqrid != null){
+      this.requestMac(obj.query.deviceqrid)
+    }
   },
 
   /**
@@ -81,34 +89,38 @@ Page({
       onlyFromCamera: true,
       success: (res)=> {
         var result = unescape(res.result)
-        var deviceqrid = result.substring(result.indexOf('deviceqrid=')+11,result.lastIndexOf('#'))
+        var deviceqrid = result.substring(result.indexOf('deviceqrid=')+11)
         console.log(deviceqrid)
-        wx.request({
-          url: getApp().globalData.host+'/api/getmac',
-          data:{"deviceqrid":deviceqrid},
-          success: (result) => {
-            console.log(result.data)
-            this.setData({
-              blemac:result.data.mac,
-              blename:result.data.blename
-            })
-            if(result.data.code == 20000){
-              this.openBluetoothAdapter()
-            }else{
-              wx.showToast({
-                title: "未找到mac地址",
-                duration: 1000,
-                icon: "error"
-              })
-            }
-          },
-          fail:(res)=>{
-            wx.showToast({
-              title: "请求接口失败",
-              duration: 1000,
-              icon: "error"
-            })
-          }
+        this.requestMac(deviceqrid)
+      }
+    })
+  },
+  requestMac(deviceqrid){
+    console.log("requestMac",deviceqrid)
+    wx.request({
+      url: getApp().globalData.host+'/api/getmac',
+      data:{"deviceqrid":deviceqrid},
+      success: (result) => {
+        console.log(result.data)
+        this.setData({
+          blemac:result.data.mac,
+          blename:result.data.blename
+        })
+        if(result.data.code == 20000){
+          this.openBluetoothAdapter()
+        }else{
+          wx.showToast({
+            title: "未找到mac地址",
+            duration: 1000,
+            icon: "error"
+          })
+        }
+      },
+      fail:(res)=>{
+        wx.showToast({
+          title: "请求接口失败",
+          duration: 1000,
+          icon: "error"
         })
       }
     })
@@ -263,9 +275,6 @@ Page({
             this._deviceId = deviceId
             this._serviceId = serviceId
             this._characteristicId = item.uuid
-            setTimeout(()=>{
-              this.formWriteData('AT+101W7=0600vv')
-             }, 1000)
             // this.writeBLECharacteristicValue()
           }
           if (item.properties.notify || item.properties.indicate) {
@@ -276,6 +285,9 @@ Page({
               state: true,
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
+                // setTimeout(()=>{
+                //   this.formWriteData(blestate)
+                // }, 1000)
               }
             })
           }
@@ -303,18 +315,34 @@ Page({
       }
     }
   },
+  //////////////
   processBLEData(data) {
     var d = hexCharCodeToStr(data)
     console.log("蓝牙接收组装完成数据",d)
     console.log("蓝牙接收组装完成数据去除校验位",d.substring(0,d.length-2))
     var backdata = d.substring(0,d.length-2)
     if(backdata.search('AT\\+102B7') != -1){
-      this.formWriteData('AT+102C7=0600vv')
+      this.formWriteData(bleopen2)
+    }else if(backdata.search('AT\\+102C7') != -1){
+      //设备启动
+    }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
+      //设备状态 AT+232A5=02.0V000%Link+000
+      this.parseState(backdata)
     }
   },
-  aaa(){
-    this.formWriteData('AT+101W7=0600vv')
+  parseState(backdata){
+      console.log("电量",backdata.substr(14,3))
   },
+  open(){
+    this.formWriteData(bleopen1)
+  },
+  state(){
+    this.formWriteData(blestate)
+  },
+  softv(){
+    this.formWriteData(blesoftv)
+  },
+  /////////////////
   formWriteData(command) {
     console.log("写入数据",command,command.length)
     if(command.length>20){
@@ -345,7 +373,7 @@ Page({
                   console.log('读取数据成功')
                   // 操作之前先监听，保证第一时间获取数据
                   wx.onBLECharacteristicValueChange((characteristic) => {
-                    console.log("蓝牙接收数据",ab2hex(characteristic.value))
+                    console.log("蓝牙接收数据",characteristic.value.byteLength ,ab2hex(characteristic.value))
                     if (characteristic.value.byteLength > 0) {
                       this.formdBLEData(ab2hex(characteristic.value))
                     }
