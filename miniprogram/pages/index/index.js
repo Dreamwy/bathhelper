@@ -8,6 +8,7 @@ const bleopen1 = 'AT+101W7=0600vv'
 const bleopen2 = 'AT+102C7=0600vv'
 const blestate = 'AT+051R5vv'
 const blesoftv = 'AT+051R4vv'
+const bleaaaa = 'aaaaaa'
 Page({
 
   /**
@@ -275,7 +276,10 @@ Page({
             this._deviceId = deviceId
             this._serviceId = serviceId
             this._characteristicId = item.uuid
-            // this.writeBLECharacteristicValue()
+            this.formWriteData(bleaaaa)
+            setTimeout(()=>{
+                  this.formWriteData(blestate)
+                }, 1000)
           }
           if (item.properties.notify || item.properties.indicate) {
             wx.notifyBLECharacteristicValueChange({
@@ -285,9 +289,6 @@ Page({
               state: true,
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
-                // setTimeout(()=>{
-                //   this.formWriteData(blestate)
-                // }, 1000)
               }
             })
           }
