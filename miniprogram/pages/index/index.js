@@ -1,4 +1,5 @@
 // miniprogram/pages/index.js
+const app = getApp()
 var bleData = ''
 var bleStr = ''
 var bleDataLength = 0
@@ -20,16 +21,44 @@ Page({
     chs: [],
     blemac:'',
     blename:'',
-    deviceqrid:''
+    deviceqrid:'',
+    deviceinfo:{}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+
     var obj = wx.getLaunchOptionsSync()
     if(obj.query.deviceqrid != null){
       this.requestMac(obj.query.deviceqrid)
+    }
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true
+      })
+    } else if (this.data.canIUse) {
+      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+      // 所以此处加入 callback 以防止这种情况
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true
+        })
+      }
+    } else {
+      // 在没有 open-type=getUserInfo 版本的兼容处理
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true
+          })
+        }
+      })
     }
   },
 
@@ -99,19 +128,52 @@ Page({
   requestMac(deviceqrid){
     console.log("requestMac",deviceqrid)
     wx.request({
-      url: getApp().globalData.host+'/api/getmac',
+      url: app.globalData.host+'/api/getmac',
       data:{"deviceqrid":deviceqrid},
       success: (result) => {
-        console.log(result.data)
+        console.log('requestMac',result.data)
         this.setData({
           blemac:result.data.mac,
           blename:result.data.blename
         })
         if(result.data.code == 20000){
-          this.openBluetoothAdapter()
+          // this.openBluetoothAdapter()
+          this.requestDeviceInfo(this.data.blemac)
         }else{
           wx.showToast({
             title: "未找到mac地址",
+            duration: 1000,
+            icon: "error"
+          })
+        }
+      },
+      fail:(res)=>{
+        wx.showToast({
+          title: "请求接口失败",
+          duration: 1000,
+          icon: "error"
+        })
+      }
+    })
+  },
+  requestDeviceInfo(id){
+    wx.request({
+      url: app.globalData.host+'/api/device/info',
+      data:{"id":id},
+      success: (result) => {
+        console.log('requestDeviceInfo',result.data)
+        // this.setData({
+        //   blemac:result.data.mac,
+        //   blename:result.data.blename
+        // })
+        if(result.data.code == 20000){
+          this.setData({
+            deviceinfo:result.data
+          })
+          // this.openBluetoothAdapter()
+        }else{
+          wx.showToast({
+            title: "未找到改设备信息",
             duration: 1000,
             icon: "error"
           })
@@ -276,10 +338,7 @@ Page({
             this._deviceId = deviceId
             this._serviceId = serviceId
             this._characteristicId = item.uuid
-            this.formWriteData(bleaaaa)
-            setTimeout(()=>{
-                  this.formWriteData(blestate)
-                }, 1000)
+            
           }
           if (item.properties.notify || item.properties.indicate) {
             wx.notifyBLECharacteristicValueChange({
@@ -289,6 +348,10 @@ Page({
               state: true,
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
+                this.formWriteData(bleaaaa)
+                setTimeout(()=>{
+                  this.formWriteData(blestate)
+                }, 1000)
               }
             })
           }
@@ -333,6 +396,7 @@ Page({
   },
   parseState(backdata){
       console.log("电量",backdata.substr(14,3))
+
   },
   open(){
     this.formWriteData(bleopen1)
