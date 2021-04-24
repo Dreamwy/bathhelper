@@ -1,12 +1,13 @@
 // miniprogram/pages/index.js
+//deviceqrid=01:00:25:12:20:20
 const app = getApp()
 var bleData = ''
 var bleStr = ''
 var bleDataLength = 0
 var isTraversing = false
 var isFindDevice = false
-const bleopen1 = 'AT+101W7=0600vv'
-const bleopen2 = 'AT+102C7=0600vv'
+const bleopen1 = 'AT+101W7=0060vv'
+const bleopen2 = 'AT+102C7=0060vv'
 const blestate = 'AT+051R5vv'
 const blesoftv = 'AT+051R4vv'
 const bleaaaa = 'aaaaaa'
@@ -170,13 +171,35 @@ Page({
           this.setData({
             deviceinfo:result.data
           })
-          // this.openBluetoothAdapter()
+          this.openBluetoothAdapter()
         }else{
           wx.showToast({
             title: "未找到改设备信息",
             duration: 1000,
             icon: "error"
           })
+        }
+      },
+      fail:(res)=>{
+        wx.showToast({
+          title: "请求接口失败",
+          duration: 1000,
+          icon: "error"
+        })
+      }
+    })
+  },
+  requestOrder(mac){
+    console.log("requestOrder",mac)
+    wx.request({
+      url: app.globalData.host+'/api/order/create',
+      data:{"deviceid":mac},
+      success: (result) => {
+        console.log('requestOrder',result.data)
+        if(result.data.code == 20000){
+          // this.openBluetoothAdapter()
+          // this.requestDeviceInfo(this.data.blemac)
+        }else{
         }
       },
       fail:(res)=>{
@@ -389,6 +412,7 @@ Page({
       this.formWriteData(bleopen2)
     }else if(backdata.search('AT\\+102C7') != -1){
       //设备启动
+      this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
       this.parseState(backdata)
@@ -396,7 +420,7 @@ Page({
   },
   parseState(backdata){
       console.log("电量",backdata.substr(14,3))
-
+      this.formWriteData(bleopen1)
   },
   open(){
     this.formWriteData(bleopen1)
