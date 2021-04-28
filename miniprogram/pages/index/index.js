@@ -6,10 +6,11 @@ var bleStr = ''
 var bleDataLength = 0
 var isTraversing = false
 var isFindDevice = false
-const bleopen1 = 'AT+101W7=0060vv'
-const bleopen2 = 'AT+102C7=0060vv'
+const bleopen1 = 'AT+101W7=0600vv'
+const bleopen2 = 'AT+102C7=0600vv'
 const blestate = 'AT+051R5vv'
 const blesoftv = 'AT+051R4vv'
+const bletime = 'AT+051R8vv'
 const bleaaaa = 'aaaaaa'
 Page({
 
@@ -416,11 +417,24 @@ Page({
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
       this.parseState(backdata)
+    }else if(backdata.search('AT\\+[0-9]{2}2A7') != -1){
+      //设备上次使用时长
+      this.parseTime(backdata)
     }
   },
   parseState(backdata){
-      console.log("电量",backdata.substr(14,3))
-      this.formWriteData(bleopen1)
+      console.log("电量",parseInt(backdata.substr(14,3)))
+      if(parseInt(backdata.substr(14,3))<40){
+        //上报低电量
+      }
+      this.getTime()
+  },
+  parseTime(backdata){
+    console.log("时间",backdata.substr(9,4))
+    this.open()
+  },
+  getTime(){
+    this.formWriteData(bletime)
   },
   open(){
     this.formWriteData(bleopen1)
