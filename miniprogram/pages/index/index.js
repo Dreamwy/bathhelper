@@ -1,13 +1,15 @@
 // miniprogram/pages/index.js
 //deviceqrid=01:00:25:12:20:20
 const app = getApp()
+
+
 var bleData = ''
 var bleStr = ''
 var bleDataLength = 0
 var isTraversing = false
 var isFindDevice = false
-const bleopen1 = 'AT+101W7=0600vv'
-const bleopen2 = 'AT+102C7=0600vv'
+const bleopen1 = 'AT+101W7=3600vv'
+const bleopen2 = 'AT+102C7=3600vv'
 const blestate = 'AT+051R5vv'
 const blesoftv = 'AT+051R4vv'
 const bletime = 'AT+051R8vv'
@@ -414,10 +416,11 @@ Page({
     }else if(backdata.search('AT\\+102C7') != -1){
       //设备启动
       this.requestOrder(this.data.blemac)
+      this.getTime()
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
       this.parseState(backdata)
-    }else if(backdata.search('AT\\+[0-9]{2}2A7') != -1){
+    }else if(backdata.search('AT\\+[0-9]{2}2A8') != -1){
       //设备上次使用时长
       this.parseTime(backdata)
     }
@@ -427,11 +430,11 @@ Page({
       if(parseInt(backdata.substr(14,3))<40){
         //上报低电量
       }
-      this.getTime()
+      this.open()
   },
   parseTime(backdata){
     console.log("时间",backdata.substr(9,4))
-    this.open()
+    //上报上次使用时长
   },
   getTime(){
     this.formWriteData(bletime)
@@ -443,6 +446,9 @@ Page({
     this.formWriteData(blestate)
   },
   softv(){
+    this.formWriteData(blesoftv)
+  },
+  shop(){
     this.formWriteData(blesoftv)
   },
   /////////////////

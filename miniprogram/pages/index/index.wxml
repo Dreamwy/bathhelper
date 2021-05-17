@@ -3,7 +3,8 @@
 <button bindtap="open" type="primary">启动</button>
 <button bindtap="state" type="primary">状态</button>
 <button bindtap="softv" type="primary">软件版本</button>
-
+<navigator appId="wx34345ae5855f892d" class="nav" openType="navigate" path="pages/index/index" target="miniProgram">商城
+</navigator>
 <text>{{deviceinfo.Hotel.name}}</text>
 <text>{{deviceinfo.room}}</text>
 <text>{{deviceinfo.Hotel.payway}}</text>

@@ -1,4 +1,5 @@
 //app.js
+const miniShopPlugin = requirePlugin('mini-shop-plugin');
 App({
   onLaunch: function () {
     // if (!wx.cloud) {
@@ -13,6 +14,8 @@ App({
     //     traceUser: true,
     //   })
     // }
+
+    miniShopPlugin.initApp(this,wx)
     this.globalData={}
     this.globalData.host="https://www.anane.net.cn"
     // 展示本地存储能力
@@ -56,7 +59,7 @@ App({
             }
           })
         }
-      }
+      },
     })
 
     
