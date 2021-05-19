@@ -451,6 +451,28 @@ Page({
   shop(){
     this.formWriteData(blesoftv)
   },
+  wxpay(){
+    wx.request({
+      url: app.globalData.host+'/api/order/wxpay',
+      data:{"openid":app.globalData.openid},
+      success: (result) => {
+        console.log('wxpay',result.data)
+        wx.requestPayment({
+          nonceStr: result.data.nonceStr,
+          package: result.data.package,
+          paySign: result.data.paySign,
+          timeStamp: result.data.timeStamp,
+          signType: "MD5",
+          success:(result) => {console.log(result)},
+          fail:(result) => {console.log(result)},
+          complete:(result) => {console.log(result)},
+        })
+        
+      },
+      fail:(res)=>{
+      }
+    })
+  },
   /////////////////
   formWriteData(command) {
     console.log("写入数据",command,command.length)
