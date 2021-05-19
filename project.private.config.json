@@ -27,7 +27,7 @@
         {
           "name": "pages/index/index",
           "pathName": "pages/index/index",
-          "query": "deviceqrid=03:03:12:18:A1:B6",
+          "query": "deviceqrid=00:08:05:54:80:05",
           "scene": null
         }
       ]

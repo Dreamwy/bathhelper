@@ -196,7 +196,7 @@ Page({
     console.log("requestOrder",mac)
     wx.request({
       url: app.globalData.host+'/api/order/create',
-      data:{"deviceid":mac},
+      data:{"deviceid":mac,"playerid":app.globalData.openid},
       success: (result) => {
         console.log('requestOrder',result.data)
         if(result.data.code == 20000){
@@ -433,8 +433,23 @@ Page({
       this.open()
   },
   parseTime(backdata){
-    console.log("时间",backdata.substr(9,4))
+    let t = backdata.substr(9,4)
+    console.log("时间",t)
     //上报上次使用时长
+    if(t<=0){
+      return
+    }
+    wx.request({
+      url: app.globalData.host+'/api/order/updatelastrecord',
+      data:{"did":this.data.blemac,
+      "content":parseInt(t)
+      },
+      success: (result) => {
+        console.log('updatelastrecord',result.data)
+      },
+      fail:(res)=>{
+      }
+    })
   },
   getTime(){
     this.formWriteData(bletime)
