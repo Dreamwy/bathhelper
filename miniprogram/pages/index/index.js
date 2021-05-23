@@ -33,11 +33,20 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
-    var obj = wx.getLaunchOptionsSync()
-    if(obj.query.deviceqrid != null){
-      this.requestMac(obj.query.deviceqrid)
+    // var obj = wx.getLaunchOptionsSync()
+    // console.log(obj)
+    // this.requestMac(options)
+    
+    if(options.q !=null){
+      var url = decodeURIComponent(options.q)
+      var deviceqrid= url.substring(url.indexOf('deviceqrid=')+11)
+      if(deviceqrid!=null){
+        this.requestMac(deviceqrid)
+      }
+    }else{
+      this.requestMac(options.deviceqrid)
     }
+    
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,

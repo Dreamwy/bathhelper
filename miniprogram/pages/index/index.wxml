@@ -9,3 +9,4 @@
 <text>{{deviceinfo.Hotel.name}}</text>
 <text>{{deviceinfo.room}}</text>
 <text>{{deviceinfo.Hotel.payway}}</text>
+<text>{{deviceinfo.aaa}}</text>
