@@ -8,8 +8,8 @@ var bleStr = ''
 var bleDataLength = 0
 var isTraversing = false
 var isFindDevice = false
-const bleopen1 = 'AT+101W7=3600vv'
-const bleopen2 = 'AT+102C7=3600vv'
+const bleopen1 = 'AT+101W7=0600vv'
+const bleopen2 = 'AT+102C7=0600vv'
 const blestate = 'AT+051R5vv'
 const blesoftv = 'AT+051R4vv'
 const bletime = 'AT+051R8vv'
