@@ -220,7 +220,9 @@ Page({
           duration: 1000,
           icon: "error"
         })
-      }
+      },
+      complete:(result) => {this.getTime()},
+
     })
   },
   openBluetoothAdapter() {
@@ -425,7 +427,6 @@ Page({
     }else if(backdata.search('AT\\+102C7') != -1){
       //设备启动
       this.requestOrder(this.data.blemac)
-      this.getTime()
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
       this.parseState(backdata)
@@ -445,7 +446,7 @@ Page({
     let t = backdata.substr(9,4)
     console.log("时间",t)
     //上报上次使用时长
-    if(t<=0){
+    if(parseInt(t)<=0){
       return
     }
     wx.request({
