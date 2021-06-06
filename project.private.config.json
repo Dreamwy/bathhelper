@@ -29,6 +29,12 @@
           "pathName": "pages/index/index",
           "query": "deviceqrid=00:08:05:54:80:05",
           "scene": null
+        },
+        {
+          "name": "pages/ads/ads",
+          "pathName": "pages/ads/ads",
+          "query": "deviceqrid=00:08:05:54:80:05",
+          "scene": null
         }
       ]
     }
