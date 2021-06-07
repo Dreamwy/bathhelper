@@ -12,7 +12,6 @@
     "pages/openapi/callback/callback",
     "pages/openapi/cloudid/cloudid",
     "pages/im/im",
-    "pages/im/room/room",
     "pages/produce/produce",
     "pages/ads/ads"
   ],

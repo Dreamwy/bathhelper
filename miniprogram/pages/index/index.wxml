@@ -1,7 +1,23 @@
-<view>
-  
+
+<image class="bannerbg" src="../../images/banner_welcome.jpg" />
+<view class=".bg1" style="width: 674rpx; height: 534rpx; display: block; box-sizing: border-box; left: 38rpx; top: -48rpx; position: relative">
+  <view style="position: absolute; width: 15rpx; height: 0rpx; display: block; box-sizing: border-box; left: 48rpx; top: 52rpx" >
+    <text class="text1">本次消费金额：</text>
+    <text class="text2" style="position: absolute; left: 0rpx; top: 50rpx">原价30</text>
+  </view>
+  <text class="text3" style="position: absolute; left: 396rpx; top: 52rpx">15</text>
+
+  <view style="position: absolute; width: 370rpx; height: 130rpx; display: block; box-sizing: border-box; left: 170rpx; top: 276rpx">
+    <image class="paybutton" src="../../images/hotelpay.png" />
+    <text class="text1" style="position: absolute; left: -22rpx; top: 98rpx">计入房费</text>
+    <text class="text6"  style="position: absolute; left: -69rpx; top: 148rpx">确认使用</text>
+  </view>
 </view>
-<image src="../../images/banner_welcome.jpg" />
+
+<view class=".bg1" style="width: 674rpx; height: 196rpx; display: block; box-sizing: border-box; left: 38rpx; top: 0rpx; position: relative">
+  <text class="text7">本次使用为有偿服务。确认使用后，设备电源指示灯亮起开始计时，即可使用。选择计入房费，小项服务费将计入到房费中，于退房时一并结算。
+计费规则：30元/24小时。</text>
+</view>
 <button bindtap="scanCode" type="primary">扫码开机</button>
 <button bindtap="open" type="primary">启动</button>
 <button bindtap="state" type="primary">状态</button>

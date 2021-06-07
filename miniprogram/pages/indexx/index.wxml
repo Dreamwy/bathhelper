@@ -8,6 +8,7 @@
         <open-data type="userAvatarUrl"></open-data>
       </view>
     </block>
+    
     <block wx:elif="{{!hasUserInfo}}">
       <button 
         wx:if="{{canIUseGetUserProfile}}" 
