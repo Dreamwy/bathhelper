@@ -26,7 +26,9 @@ Page({
     blemac:'',
     blename:'',
     deviceqrid:'',
-    deviceinfo:{}
+    deviceinfo:{},
+    isShowHotelpay :false,
+    isShowWxpay:false
   },
 
   /**
@@ -183,7 +185,12 @@ Page({
           this.setData({
             deviceinfo:result.data
           })
-          this.openBluetoothAdapter()
+          if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
+            this.setData({isShowHotelpay:true,isShowWxpay:false})
+          }else{
+            this.setData({isShowHotelpay:false,isShowWxpay:true})
+          }
+          // this.openBluetoothAdapter()
         }else{
           wx.showToast({
             title: "未找到改设备信息",
