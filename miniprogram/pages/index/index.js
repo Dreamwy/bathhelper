@@ -1,5 +1,7 @@
 // miniprogram/pages/index.js
 //deviceqrid=01:00:25:12:20:20
+
+const moment = require('../util/moment.min');
 const app = getApp()
 
 
@@ -28,7 +30,12 @@ Page({
     deviceqrid:'',
     deviceinfo:{},
     isShowHotelpay :false,
-    isShowWxpay:false
+    isShowWxpay:false,
+    payview:true,
+    sureview:false,
+    timeview:false,
+    hotelorder:{},
+    lefttime:0
   },
 
   /**
@@ -208,7 +215,8 @@ Page({
       }
     })
   },
-  requestOrder(mac){
+  requestOrder(){
+    var mac  = this.data.blemac
     console.log("requestOrder",mac)
     wx.request({
       url: app.globalData.host+'/api/order/create',
@@ -216,7 +224,12 @@ Page({
       success: (result) => {
         console.log('requestOrder',result.data)
         if(result.data.code == 20000){
-          // this.openBluetoothAdapter()
+          // this.setData({payview:false,sureview:true,timeview:false,hotelorder:result.data.order})
+          this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
+          var a = moment().valueOf()
+          var b = moment(this.data.hotelorder.created_at).valueOf()
+          var c = a-b
+          this.setData({lefttime:c})
           // this.requestDeviceInfo(this.data.blemac)
         }else{
         }
@@ -433,11 +446,12 @@ Page({
       this.formWriteData(bleopen2)
     }else if(backdata.search('AT\\+102C7') != -1){
       //设备启动
-      this.requestOrder(this.data.blemac)
+      // this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
       this.parseState(backdata)
     }else if(backdata.search('AT\\+[0-9]{2}2A8') != -1){
+      this.setData({payview:false,sureview:false,timeview:true})
       //设备上次使用时长
       this.parseTime(backdata)
     }

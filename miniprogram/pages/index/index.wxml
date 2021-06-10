@@ -1,13 +1,13 @@
 
 <image class="bannerbg" src="../../images/banner_welcome.jpg" />
-<view wx:if="{{3<2}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: block; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative">
+<view wx:if="{{payview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: block; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative">
   <view style="position: absolute; width: 15rpx; height: 0rpx; display: block; box-sizing: border-box; left: 48rpx; top: 52rpx" >
     <text class="text1">本次消费金额：</text>
     <text class="text2" style="position: absolute; left: 0rpx; top: 50rpx">原价{{deviceinfo.Hotel.price}}</text>
   </view>
   <text class="text3" style="position: absolute; left: 396rpx; top: 52rpx">15</text>
 
-  <view bindtap="wxpay" wx:if="{{isShowHotelpay}}" style="position: absolute; width: 186rpx; height: 130rpx; display: block; box-sizing: border-box; left: 280rpx; top: 225rpx">
+  <view bindtap="requestOrder" wx:if="{{isShowHotelpay}}" style="position: absolute; width: 186rpx; height: 130rpx; display: block; box-sizing: border-box; left: 280rpx; top: 225rpx">
     <image class="paybutton" src="../../images/hotelpay.png" />
     <text class="text1" style="position: absolute; left: -22rpx; top: 98rpx">计入房费</text>
     <text class="text6"  style="position: absolute; left: -69rpx; top: 148rpx">确认使用</text>
@@ -19,13 +19,23 @@
   </view>
 </view>
 
-<view wx:if="{{3<2}}" class=".bg1" style="width: 674rpx; height: 191rpx; display: block; box-sizing: border-box; left: 38rpx; top: 4rpx; position: relative">
+<view wx:if="{{payview}}" class=".bg1" style="width: 674rpx; height: 191rpx; display: block; box-sizing: border-box; left: 38rpx; top: 4rpx; position: relative">
   <text class="text7">本次使用为有偿服务。确认使用后，设备电源指示灯亮起开始计时，即可使用。选择计入房费，小项服务费将计入到房费中，于退房时一并结算。
 计费规则：{{deviceinfo.Hotel.price}}元/24小时。</text>
 </view>
-<view class=".bg1" style="width: 674rpx; height: 534rpx; display: block; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative">
-
+<view wx:if="{{sureview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: block; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative">
+  <text class="text1" style="position: absolute; left: 54rpx; top: 38rpx">欢迎使用
+小项搓背服务！</text>
+  <text class="text7" style="position: absolute; left: 54rpx; top: 142rpx">确认开机后，
+自动搓背机电源指示灯亮起即可使</text>
+<button bindtap="openBluetoothAdapter" type="primary" style="position: absolute; left: 152rpx; top: 372rpx">确认开机</button>
 </view>
+<view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">
+  <text class="text1" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; left: 191rpx; top: 108rpx; width: 294rpx; height: 50rpx">本次服务剩余时间</text>
+  <text class="text6"  style="font-size: 30px; display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; left: 214rpx; top: 230rpx">{{lefttime}}</text>
+  <text class="text7" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; left: 22rpx; top: 306rpx">温馨提示：24小时内微信扫码开机即可使用</text>
+</view>
+<view wx:if="{{3<2}}">
 <button bindtap="scanCode" type="primary">扫码开机</button>
 <button bindtap="open" type="primary">启动</button>
 <button bindtap="state" type="primary">状态</button>
@@ -37,3 +47,4 @@
 <text>{{deviceinfo.room}}</text>
 <text>{{deviceinfo.Hotel.payway}}</text>
 <text>{{deviceinfo.aaa}}</text>
+</view>
