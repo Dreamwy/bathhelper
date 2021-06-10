@@ -45,7 +45,12 @@ Page({
     // var obj = wx.getLaunchOptionsSync()
     // console.log(obj)
     // this.requestMac(options)
-    
+    setInterval(()=> {
+      if(this.data.lefttime != 0){
+        var t = moment(this.data.lefttime,'HH:mm:ss').valueOf()
+        this.setData({lefttime:moment(t-1000).format('HH:mm:ss')})
+      }
+   }, 1000);
     if(options.q !=null){
       var url = decodeURIComponent(options.q)
       var deviceqrid= url.substring(url.indexOf('deviceqrid=')+11)
@@ -224,12 +229,13 @@ Page({
       success: (result) => {
         console.log('requestOrder',result.data)
         if(result.data.code == 20000){
-          // this.setData({payview:false,sureview:true,timeview:false,hotelorder:result.data.order})
-          this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
+          this.setData({payview:false,sureview:true,timeview:false,hotelorder:result.data.order})
+          // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
+          // (1000*60*60*24)-
           var a = moment().valueOf()
-          var b = moment(this.data.hotelorder.created_at).valueOf()
-          var c = a-b
-          this.setData({lefttime:c})
+          var b = moment(this.data.hotelorder.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
+          var c = moment.duration((1000*60*60*24)-(a-b),'milliseconds')
+          this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
           // this.requestDeviceInfo(this.data.blemac)
         }else{
         }
