@@ -31,7 +31,7 @@ Page({
     deviceinfo:{},
     isShowHotelpay :false,
     isShowWxpay:false,
-    payview:true,
+    payview:false,
     sureview:false,
     timeview:false,
     hotelorder:{},
@@ -45,22 +45,6 @@ Page({
     // var obj = wx.getLaunchOptionsSync()
     // console.log(obj)
     // this.requestMac(options)
-    setInterval(()=> {
-      if(this.data.lefttime != 0){
-        var t = moment(this.data.lefttime,'HH:mm:ss').valueOf()
-        this.setData({lefttime:moment(t-1000).format('HH:mm:ss')})
-      }
-   }, 1000);
-    if(options.q !=null){
-      var url = decodeURIComponent(options.q)
-      var deviceqrid= url.substring(url.indexOf('deviceqrid=')+11)
-      if(deviceqrid!=null){
-        this.requestMac(deviceqrid)
-      }
-    }else{
-      this.requestMac(options.deviceqrid)
-    }
-    
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -87,6 +71,44 @@ Page({
         }
       })
     }
+
+    // 登录
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        if(res.code){
+          wx.request({
+            url: app.globalData.host+'/api/wxlogin',
+            data: {
+              code: res.code
+            },
+            success: (result) => {
+              console.log('wxlogin',result.data)
+              app.globalData.openid = result.data.openid
+              if(options.q !=null){
+                var url = decodeURIComponent(options.q)
+                var deviceqrid= url.substring(url.indexOf('deviceqrid=')+11)
+                if(deviceqrid!=null){
+                  this.requestMac(deviceqrid)
+                }
+              }else{
+                this.requestMac(options.deviceqrid)
+              }
+            }
+          })
+        }
+      }
+    }),
+    
+    setInterval(()=> {
+      if(this.data.lefttime != 0){
+        var t = moment(this.data.lefttime,'HH:mm:ss').valueOf()
+        this.setData({lefttime:moment(t-1000).format('HH:mm:ss')})
+      }
+   }, 1000);
+    
+    
+    
   },
 
   /**
@@ -197,11 +219,7 @@ Page({
           this.setData({
             deviceinfo:result.data
           })
-          if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
-            this.setData({isShowHotelpay:true,isShowWxpay:false})
-          }else{
-            this.setData({isShowHotelpay:false,isShowWxpay:true})
-          }
+          this.checkOrder()
           // this.openBluetoothAdapter()
         }else{
           wx.showToast({
@@ -218,6 +236,43 @@ Page({
           icon: "error"
         })
       }
+    })
+  },
+  checkOrder(){
+    var mac  = this.data.blemac
+    console.log("checkOrder",mac,app.globalData.openid)
+    wx.request({
+      url: app.globalData.host+'/api/order/check',
+      data:{"deviceid":mac,"playerid":app.globalData.openid},
+      success: (result) => {
+        console.log('checkorder',result.data)
+        if(result.data.code == 20000){
+          this.setData({payview:false,sureview:true,timeview:false,hotelorder:result.data.order})
+          // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
+          // (1000*60*60*24)-
+          var a = moment().valueOf()
+          var b = moment(this.data.hotelorder.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
+          var c = moment.duration((1000*60*60*24)-(a-b),'milliseconds')
+          this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
+          // this.requestDeviceInfo(this.data.blemac)
+        }else{
+          this.setData({payview:true,sureview:false,timeview:false})
+          if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
+            this.setData({isShowHotelpay:true,isShowWxpay:false})
+          }else{
+            this.setData({isShowHotelpay:false,isShowWxpay:true})
+          }
+        }
+      },
+      fail:(res)=>{
+        wx.showToast({
+          title: "请求接口失败",
+          duration: 1000,
+          icon: "error"
+        })
+      },
+      complete:(result) => {this.getTime()},
+
     })
   },
   requestOrder(){
@@ -252,6 +307,16 @@ Page({
     })
   },
   openBluetoothAdapter() {
+    var mac  = this.data.blemac
+    wx.request({
+      url: app.globalData.host+'/api/order/createrecord',
+      data:{"deviceid":mac,"playerid":app.globalData.openid,"orderid":this.data.hotelorder.id},
+      success: (result) => {
+        console.log('createrecord',result.data)
+      },
+      fail:(res)=>{
+      }
+    })
     wx.openBluetoothAdapter({
       success: (res) => {
         console.log('openBluetoothAdapter success', res)
