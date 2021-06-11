@@ -1,6 +1,6 @@
 // miniprogram/pages/index.js
 //deviceqrid=01:00:25:12:20:20
-
+//deviceqrid=00:08:05:54:80:05
 const moment = require('../util/moment.min');
 const app = getApp()
 
@@ -571,7 +571,7 @@ Page({
   wxpay(){
     wx.request({
       url: app.globalData.host+'/api/order/wxpay',
-      data:{"openid":app.globalData.openid},
+      data:{"openid":app.globalData.openid,"attach":"lllllll"},
       success: (result) => {
         console.log('wxpay',result.data)
         wx.requestPayment({
