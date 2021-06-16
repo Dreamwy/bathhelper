@@ -243,80 +243,78 @@ Page({
     })
   },
   checkWxOrder(){
-    this.setData({payview:true,sureview:false,timeview:false})
-    this.setData({isShowHotelpay:false,isShowWxpay:true})
-  //   var mac  = this.data.blemac
-  //   console.log("checkWxOrder",mac,app.globalData.openid)
-  //   wx.request({
-  //     url: app.globalData.host+'/api/order/checkwx',
-  //     data:{"deviceid":mac,"playerid":app.globalData.openid},
-  //     success: (result) => {
-  //       console.log('checkWxOrder',result.data)
-  //       if(result.data.code == 20000){
-  //         this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
-  //         // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
-  //         // (1000*60*60*24)-
-  //         var a = moment().valueOf()
-  //         var b = moment(result.data.order.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
-  //         var c = moment.duration((1000*60*60*24)-(a-b),'milliseconds')
-  //         this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
-  //         // this.requestDeviceInfo(this.data.blemac)
-  //       }else{
-  //         this.setData({payview:true,sureview:false,timeview:false})
-  //         if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
-  //           this.setData({isShowHotelpay:true,isShowWxpay:false})
-  //         }else{
-  //           this.setData({isShowHotelpay:false,isShowWxpay:true})
-  //         }
-  //       }
-  //     },
-  //     fail:(res)=>{
-  //       wx.showToast({
-  //         title: "请求接口失败",
-  //         duration: 1000,
-  //         icon: "error"
-  //       })
-  //     },
-  //     complete:(result) => {this.getTime()},
+    var mac  = this.data.blemac
+    console.log("checkWxOrder",mac,app.globalData.openid)
+    wx.request({
+      url: app.globalData.host+'/api/order/checkwx',
+      data:{"deviceid":mac,"playerid":app.globalData.openid},
+      success: (result) => {
+        console.log('checkWxOrder',result.data)
+        if(result.data.code == 20000){
+          this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
+          // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
+          // (1000*60*60*24)-
+          var a = moment().valueOf()
+          var b = moment(result.data.order.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
+          var c = moment.duration((1000*60*60*24)-(a-b),'milliseconds')
+          this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
+          // this.requestDeviceInfo(this.data.blemac)
+        }else{
+          this.setData({payview:true,sureview:false,timeview:false})
+          if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
+            this.setData({isShowHotelpay:true,isShowWxpay:false})
+          }else{
+            this.setData({isShowHotelpay:false,isShowWxpay:true})
+          }
+        }
+      },
+      fail:(res)=>{
+        wx.showToast({
+          title: "请求接口失败",
+          duration: 1000,
+          icon: "error"
+        })
+      },
+      complete:(result) => {this.getTime()},
 
-  //   })
-  // },
-  // checkOrder(){
-  //   var mac  = this.data.blemac
-  //   console.log("checkOrder",mac,app.globalData.openid)
-  //   wx.request({
-  //     url: app.globalData.host+'/api/order/check',
-  //     data:{"deviceid":mac,"playerid":app.globalData.openid},
-  //     success: (result) => {
-  //       console.log('checkorder',result.data)
-  //       if(result.data.code == 20000){
-  //         this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
-  //         // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
-  //         // (1000*60*60*24)-
-  //         var a = moment().valueOf()
-  //         var b = moment(result.data.order.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
-  //         var c = moment.duration((1000*60*60*24)-(a-b),'milliseconds')
-  //         this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
-  //         // this.requestDeviceInfo(this.data.blemac)
-  //       }else{
-  //         this.setData({payview:true,sureview:false,timeview:false})
-  //         if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
-  //           this.setData({isShowHotelpay:true,isShowWxpay:false})
-  //         }else{
-  //           this.setData({isShowHotelpay:false,isShowWxpay:true})
-  //         }
-  //       }
-  //     },
-  //     fail:(res)=>{
-  //       wx.showToast({
-  //         title: "请求接口失败",
-  //         duration: 1000,
-  //         icon: "error"
-  //       })
-  //     },
-  //     complete:(result) => {this.getTime()},
+    })
+  },
+  checkOrder(){
+    var mac  = this.data.blemac
+    console.log("checkOrder",mac,app.globalData.openid)
+    wx.request({
+      url: app.globalData.host+'/api/order/check',
+      data:{"deviceid":mac,"playerid":app.globalData.openid},
+      success: (result) => {
+        console.log('checkorder',result.data)
+        if(result.data.code == 20000){
+          this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
+          // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
+          // (1000*60*60*24)-
+          var a = moment().valueOf()
+          var b = moment(result.data.order.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
+          var c = moment.duration((1000*60*60*24)-(a-b),'milliseconds')
+          this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
+          // this.requestDeviceInfo(this.data.blemac)
+        }else{
+          this.setData({payview:true,sureview:false,timeview:false})
+          if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
+            this.setData({isShowHotelpay:true,isShowWxpay:false})
+          }else{
+            this.setData({isShowHotelpay:false,isShowWxpay:true})
+          }
+        }
+      },
+      fail:(res)=>{
+        wx.showToast({
+          title: "请求接口失败",
+          duration: 1000,
+          icon: "error"
+        })
+      },
+      complete:(result) => {this.getTime()},
 
-  //   })
+    })
   },
   requestOrder(){
     var mac  = this.data.blemac
