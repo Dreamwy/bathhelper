@@ -35,7 +35,8 @@ Page({
     sureview:false,
     timeview:false,
     orderid:"",
-    lefttime:0
+    lefttime:0,
+    plan:0
   },
 
   /**
@@ -275,7 +276,7 @@ Page({
           icon: "error"
         })
       },
-      complete:(result) => {this.getTime()},
+      complete:(result) => {},
 
     })
   },
@@ -312,7 +313,7 @@ Page({
           icon: "error"
         })
       },
-      complete:(result) => {this.getTime()},
+      complete:(result) => {},
 
     })
   },
@@ -344,7 +345,7 @@ Page({
           icon: "error"
         })
       },
-      complete:(result) => {this.getTime()},
+      complete:(result) => {},
 
     })
   },
@@ -361,8 +362,12 @@ Page({
     })
     wx.openBluetoothAdapter({
       success: (res) => {
+        
         console.log('openBluetoothAdapter success', res)
         this.startBluetoothDevicesDiscovery()
+        this.setData({
+            plan:10
+          })
       },
       fail: (res) => {
         if (res.errCode === 10001) {
@@ -403,6 +408,9 @@ Page({
     wx.startBluetoothDevicesDiscovery({
       allowDuplicatesKey: true,
       success: (res) => {
+        this.setData({
+          plan:20
+        })
         console.log('startBluetoothDevicesDiscovery success', res)
         this.onBluetoothDeviceFound()
       },
@@ -410,6 +418,9 @@ Page({
   },
   onBluetoothDeviceFound() {
     wx.onBluetoothDeviceFound((res) => {
+      this.setData({
+        plan:30
+      })
       this.traverseDevices(res)
     })
   },
@@ -452,8 +463,7 @@ Page({
       success: (res) => {
         this.setData({
           connected: true,
-          name,
-          deviceId,
+          plan:40
         })
         this.getBLEDeviceServices(deviceId)
       },
@@ -475,6 +485,9 @@ Page({
       deviceId,
       success: (res) => {
         console.log("getBLEDeviceServices", res.services)
+        this.setData({
+          plan:50
+        })
         this.getBLEDeviceCharacteristics(deviceId, 'EFCDAB89-6745-2301-EFCD-AB8967452301')
       },
       fail:(res)=>{
@@ -491,6 +504,10 @@ Page({
       deviceId,
       serviceId,
       success: (res) => {
+        this.setData({
+          connected: true,
+          plan:60
+        })
         console.log('getBLEDeviceCharacteristics success', res.characteristics)
         for (let i = 0; i < res.characteristics.length; i++) {
           let item = res.characteristics[i]
@@ -520,6 +537,9 @@ Page({
                 console.log('开启notify成功' + this._characteristicId)
                 this.formWriteData(bleaaaa)
                 setTimeout(()=>{
+                  this.setData({
+                    plan:60
+                  })
                   this.formWriteData(blestate)
                 }, 1000)
               }
@@ -556,17 +576,31 @@ Page({
     console.log("蓝牙接收组装完成数据去除校验位",d.substring(0,d.length-2))
     var backdata = d.substring(0,d.length-2)
     if(backdata.search('AT\\+102B7') != -1){
+      this.setData({
+        plan:80
+      })
       this.formWriteData(bleopen2)
     }else if(backdata.search('AT\\+102C7') != -1){
+      this.setData({
+        plan:90
+      })
+      this.getTime()
       //设备启动
       // this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
+      this.setData({
+        plan:70
+      })
       this.parseState(backdata)
     }else if(backdata.search('AT\\+[0-9]{2}2A8') != -1){
-      this.setData({payview:false,sureview:false,timeview:true})
+      
+      this.setData({
+        plan:100
+      })
       //设备上次使用时长
       this.parseTime(backdata)
+      this.setData({payview:false,sureview:false,timeview:true})
     }
   },
   parseState(backdata){

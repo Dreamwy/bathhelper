@@ -28,7 +28,10 @@
 小项搓背服务！</text>
   <text class="text7" style="position: absolute; left: 54rpx; top: 142rpx">确认开机后，
 自动搓背机电源指示灯亮起即可使</text>
-<button bindtap="openBluetoothAdapter" type="primary" style="position: absolute; left: 152rpx; top: 372rpx">确认开机</button>
+<view wx:if="{{plan>0}}" class="progress-box">
+  <progress percent="{{plan}}" color="#10AEFF" active stroke-width="3" />
+</view>
+<button wx:if="{{plan<=0}}" bindtap="openBluetoothAdapter" type="primary" style="position: absolute; left: 152rpx; top: 372rpx">确认开机</button>
 </view>
 <view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">
   <text class="text1" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; left: 191rpx; top: 108rpx; width: 294rpx; height: 50rpx">本次服务剩余时间</text>
