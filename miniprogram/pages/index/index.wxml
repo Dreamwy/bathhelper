@@ -19,7 +19,7 @@
   </view>
 </view>
 
-<view wx:if="{{payview}}" class=".bg1" style="width: 674rpx; height: 191rpx; display: block; box-sizing: border-box; left: 38rpx; top: 4rpx; position: relative">
+<view wx:if="{{payview}}" class=".bg1" style="width: 674rpx; height: 191rpx; display: block; box-sizing: border-box; left: 38rpx; top: 4rpx; position: relative; display: flex;align-items: center;justify-content: center;">
   <text class="text7">本次使用为有偿服务。确认使用后，设备电源指示灯亮起开始计时，即可使用。选择计入房费，小项服务费将计入到房费中，于退房时一并结算。
 计费规则：{{deviceinfo.Hotel.price}}元/24小时。</text>
 </view>
@@ -28,8 +28,8 @@
 小项搓背服务！</text>
   <text class="text7" style="position: absolute; left: 54rpx; top: 142rpx">确认开机后，
 自动搓背机电源指示灯亮起即可使</text>
-<view wx:if="{{plan>0}}" class="progress-box">
-  <progress percent="{{plan}}" color="#10AEFF" active stroke-width="3" />
+<view wx:if="{{plan>0}}" class="progress-box" style="position: absolute; left: 152rpx; top: 372rpx">
+  <progress percent="{{plan}}" color="#10AEFF" active stroke-width="3" active-mode="forwards"/>
 </view>
 <button wx:if="{{plan<=0}}" bindtap="openBluetoothAdapter" type="primary" style="position: absolute; left: 152rpx; top: 372rpx">确认开机</button>
 </view>
