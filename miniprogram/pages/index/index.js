@@ -225,7 +225,7 @@ Page({
           }else{
             this.checkWxOrder()
           }
-          // this.openBluetoothAdapter()
+          this.openBluetoothAdapter()
         }else{
           wx.showToast({
             title: "未找到改设备信息",
@@ -365,9 +365,7 @@ Page({
         
         console.log('openBluetoothAdapter success', res)
         this.startBluetoothDevicesDiscovery()
-        this.setData({
-            plan:10
-          })
+        
       },
       fail: (res) => {
         if (res.errCode === 10001) {
@@ -408,9 +406,6 @@ Page({
     wx.startBluetoothDevicesDiscovery({
       allowDuplicatesKey: true,
       success: (res) => {
-        this.setData({
-          plan:20
-        })
         console.log('startBluetoothDevicesDiscovery success', res)
         this.onBluetoothDeviceFound()
       },
@@ -418,9 +413,6 @@ Page({
   },
   onBluetoothDeviceFound() {
     wx.onBluetoothDeviceFound((res) => {
-      this.setData({
-        plan:30
-      })
       this.traverseDevices(res)
     })
   },
@@ -462,8 +454,7 @@ Page({
       deviceId,
       success: (res) => {
         this.setData({
-          connected: true,
-          plan:40
+          connected: true
         })
         this.getBLEDeviceServices(deviceId)
       },
@@ -485,9 +476,6 @@ Page({
       deviceId,
       success: (res) => {
         console.log("getBLEDeviceServices", res.services)
-        this.setData({
-          plan:50
-        })
         this.getBLEDeviceCharacteristics(deviceId, 'EFCDAB89-6745-2301-EFCD-AB8967452301')
       },
       fail:(res)=>{
@@ -505,8 +493,7 @@ Page({
       serviceId,
       success: (res) => {
         this.setData({
-          connected: true,
-          plan:60
+          connected: true
         })
         console.log('getBLEDeviceCharacteristics success', res.characteristics)
         for (let i = 0; i < res.characteristics.length; i++) {
@@ -537,9 +524,6 @@ Page({
                 console.log('开启notify成功' + this._characteristicId)
                 this.formWriteData(bleaaaa)
                 setTimeout(()=>{
-                  this.setData({
-                    plan:60
-                  })
                   this.formWriteData(blestate)
                 }, 1000)
               }
@@ -577,30 +561,24 @@ Page({
     var backdata = d.substring(0,d.length-2)
     if(backdata.search('AT\\+102B7') != -1){
       this.setData({
-        plan:80
+        plan:50
       })
       this.formWriteData(bleopen2)
     }else if(backdata.search('AT\\+102C7') != -1){
       this.setData({
-        plan:90
+        plan:100
       })
-      this.getTime()
+      // this.getTime()
+      this.setData({payview:false,sureview:false,timeview:true})
       //设备启动
       // this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
       //设备状态 AT+232A5=02.0V000%Link+000
-      this.setData({
-        plan:70
-      })
       this.parseState(backdata)
     }else if(backdata.search('AT\\+[0-9]{2}2A8') != -1){
       
-      this.setData({
-        plan:100
-      })
       //设备上次使用时长
       this.parseTime(backdata)
-      this.setData({payview:false,sureview:false,timeview:true})
     }
   },
   parseState(backdata){
@@ -608,7 +586,7 @@ Page({
       if(parseInt(backdata.substr(14,3))<40){
         //上报低电量
       }
-      this.open()
+      this.getTime()
   },
   parseTime(backdata){
     let t = backdata.substr(9,4)
