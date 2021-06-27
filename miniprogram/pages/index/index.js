@@ -36,7 +36,9 @@ Page({
     timeview:false,
     orderid:"",
     lefttime:0,
-    plan:0
+    plan:0,
+    isfirst:false,
+    realprice:0
   },
 
   /**
@@ -109,7 +111,7 @@ Page({
       }
    }, 1000);
     
-  // this.setData({payview:false,sureview:false,timeview:false,openview:100,plan:100})
+  // this.setData({payview:false,sureview:false,timeview:true,openview:false})
     
   },
 
@@ -219,7 +221,8 @@ Page({
         // })
         if(result.data.code == 20000){
           this.setData({
-            deviceinfo:result.data
+            deviceinfo:result.data,
+            realprice:result.data.Hotel.price
           })
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
             this.checkOrder()
@@ -262,6 +265,9 @@ Page({
           this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
           // this.requestDeviceInfo(this.data.blemac)
         }else{
+          if(result.data.code == 20001){
+            this.setData({isfirst:result.data.first,realprice:this.data.realprice*0.5})
+          }
           this.setData({payview:true,sureview:false,timeview:false,openview:false})
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
             this.setData({isShowHotelpay:true,isShowWxpay:false})
@@ -299,6 +305,9 @@ Page({
           this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
           // this.requestDeviceInfo(this.data.blemac)
         }else{
+          if(result.data.code == 20001){
+            this.setData({isfirst:result.data.first,realprice:this.data.realprice*0.5})
+          }
           this.setData({payview:true,sureview:false,timeview:false,openview:false})
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
             this.setData({isShowHotelpay:true,isShowWxpay:false})

@@ -3,9 +3,13 @@
 <view wx:if="{{payview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: block; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative">
   <view style="position: absolute; width: 15rpx; height: 0rpx; display: block; box-sizing: border-box; left: 48rpx; top: 52rpx" >
     <text class="text1">本次消费金额：</text>
-    <text class="text2" style="position: absolute; left: 0rpx; top: 50rpx">原价{{deviceinfo.Hotel.price}}</text>
+    <view style="position: absolute; left: 0rpx; top: 50rpx;display:flex;flex-direction: row;">
+      <text class="text2" >原价{{deviceinfo.Hotel.price}}</text>
+      <text wx:if="{{isfirst}}" class="text2" >*首单5折</text>
+    </view>
+    
   </view>
-  <text class="text3" style="position: absolute; left: 396rpx; top: 52rpx">15</text>
+  <text class="text3" style="position: absolute; left: 396rpx; top: 52rpx">{{realprice}}</text>
 
   <view bindtap="requestOrder" wx:if="{{isShowHotelpay}}" style="position: absolute; width: 186rpx; height: 130rpx; display: block; box-sizing: border-box; left: 280rpx; top: 225rpx">
     <image class="paybutton" src="../../images/hotelpay.png" />
@@ -31,10 +35,18 @@
 
 <button wx:if="{{plan<=0}}" bindtap="open" type="primary" style="position: absolute; left: 152rpx; top: 372rpx">确认开机</button>
 </view>
-<view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">
-  <text class="text1" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;  top: 108rpx; width: 400rpx; height: 50rpx">本次服务剩余时间</text>
-  <text class="text6"  style="font-size: 30px; display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; top: 230rpx">{{lefttime}}</text>
-  <text class="text7" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;top: 306rpx">温馨提示：24小时内微信扫码开机即可使用</text>
+<view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height: 400rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">
+  <text class="text1" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;  top: 50rpx; width: 400rpx; height: 50rpx">本次服务剩余时间</text>
+  <text class="text6"  style="font-size: 30px; display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; top: 150rpx">{{lefttime}}</text>
+  <text class="text7" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;top: 250rpx">温馨提示：24小时内微信扫码开机即可使用</text>
+</view>
+<view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height:300rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -30rpx; position: relative;justify-content: center;display:flex;">
+  <view class=".bg2" style="width: 550rpx; top:10rpx;height:100rpx; display: flex; box-sizing: border-box;">
+    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 8rpx">10</text>
+    <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">小项搓背服务代金券</text>
+  <text class="text7" style="position: absolute; left: 199rpx; top: 53rpx">再次使用自动抵扣</text>
+  </view>
+  
 </view>
 <view wx:if="{{openview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">
   <text class="text1" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;  top: 108rpx; width: 400rpx; height: 50rpx">正在打开搓背机</text>
