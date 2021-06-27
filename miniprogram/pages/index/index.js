@@ -46,6 +46,7 @@ Page({
     // var obj = wx.getLaunchOptionsSync()
     // console.log(obj)
     // this.requestMac(options)
+
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -108,7 +109,7 @@ Page({
       }
    }, 1000);
     
-    
+  // this.setData({payview:false,sureview:false,timeview:false,openview:100,plan:100})
     
   },
 
@@ -252,7 +253,7 @@ Page({
       success: (result) => {
         console.log('checkWxOrder',result.data)
         if(result.data.code == 20000){
-          this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
+          this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:result.data.order.id})
           // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
           // (1000*60*60*24)-
           var a = moment().valueOf()
@@ -261,7 +262,7 @@ Page({
           this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
           // this.requestDeviceInfo(this.data.blemac)
         }else{
-          this.setData({payview:true,sureview:false,timeview:false})
+          this.setData({payview:true,sureview:false,timeview:false,openview:false})
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
             this.setData({isShowHotelpay:true,isShowWxpay:false})
           }else{
@@ -289,7 +290,7 @@ Page({
       success: (result) => {
         console.log('checkorder',result.data)
         if(result.data.code == 20000){
-          this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
+          this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:result.data.order.id})
           // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
           // (1000*60*60*24)-
           var a = moment().valueOf()
@@ -298,7 +299,7 @@ Page({
           this.setData({lefttime:c.hours()+":"+c.minutes()+":"+c.seconds()})
           // this.requestDeviceInfo(this.data.blemac)
         }else{
-          this.setData({payview:true,sureview:false,timeview:false})
+          this.setData({payview:true,sureview:false,timeview:false,openview:false})
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
             this.setData({isShowHotelpay:true,isShowWxpay:false})
           }else{
@@ -326,7 +327,7 @@ Page({
       success: (result) => {
         console.log('requestOrder',result.data)
         if(result.data.code == 20000){
-          this.setData({payview:false,sureview:true,timeview:false,orderid:result.data.order.id})
+          this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:result.data.order.id})
           // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
           // (1000*60*60*24)-
           var a = moment().valueOf()
@@ -350,16 +351,7 @@ Page({
     })
   },
   openBluetoothAdapter() {
-    var mac  = this.data.blemac
-    wx.request({
-      url: app.globalData.host+'/api/order/createrecord',
-      data:{"deviceid":mac,"playerid":app.globalData.openid,"orderid":this.data.orderid},
-      success: (result) => {
-        console.log('createrecord',result.data)
-      },
-      fail:(res)=>{
-      }
-    })
+    
     wx.openBluetoothAdapter({
       success: (res) => {
         
@@ -447,6 +439,7 @@ Page({
     })
   },
   createBLEConnection() {
+    console.log("createBLEConnection")
     const ds = this.data.device
     const deviceId = ds.deviceId
     const name = ds.name
@@ -459,11 +452,12 @@ Page({
         this.getBLEDeviceServices(deviceId)
       },
       fail:(res)=>{
-        wx.showToast({
-          title: "连接设备失败",
-          duration: 1000,
-          icon: "error"
-        })
+        // wx.showToast({
+        //   title: "连接设备失败",
+        //   duration: 1000,
+        //   icon: "error"
+        // })
+        this.createBLEConnection()
       }
     })
     this.stopBluetoothDevicesDiscovery()
@@ -560,6 +554,7 @@ Page({
     console.log("蓝牙接收组装完成数据去除校验位",d.substring(0,d.length-2))
     var backdata = d.substring(0,d.length-2)
     if(backdata.search('AT\\+102B7') != -1){
+      this.setData({payview:false,sureview:false,timeview:false,openview:true})
       this.setData({
         plan:50
       })
@@ -568,8 +563,8 @@ Page({
       this.setData({
         plan:100
       })
-      // this.getTime()
-      this.setData({payview:false,sureview:false,timeview:true})
+      this.getTime()
+      this.setData({payview:false,sureview:false,timeview:true,openview:false})
       //设备启动
       // this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
@@ -586,7 +581,6 @@ Page({
       if(parseInt(backdata.substr(14,3))<40){
         //上报低电量
       }
-      this.getTime()
   },
   parseTime(backdata){
     let t = backdata.substr(9,4)
@@ -602,6 +596,15 @@ Page({
       },
       success: (result) => {
         console.log('updatelastrecord',result.data)
+        wx.request({
+          url: app.globalData.host+'/api/order/createrecord',
+          data:{"deviceid":this.data.blemac,"playerid":app.globalData.openid,"orderid":this.data.orderid},
+          success: (result) => {
+            console.log('createrecord',result.data)
+          },
+          fail:(res)=>{
+          }
+        })
       },
       fail:(res)=>{
       }
@@ -636,7 +639,7 @@ Page({
           timeStamp: result.data.timeStamp,
           signType: "MD5",
           success:(result) => {
-          this.setData({payview:false,sureview:true,timeview:false,orderid:out_trade_no})
+          this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:out_trade_no})
           var a = moment().valueOf()
           var b = moment().valueOf()
           // var b = moment(result.data.order.created_at,"YYYY-MM-DD HH:mm:ss").valueOf()
