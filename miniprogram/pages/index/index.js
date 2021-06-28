@@ -267,6 +267,8 @@ Page({
         }else{
           if(result.data.code == 20001){
             this.setData({isfirst:result.data.first,realprice:this.data.realprice*0.5})
+          }else{
+            this.setData({isfirst:false,realprice:this.data.realprice-10})
           }
           this.setData({payview:true,sureview:false,timeview:false,openview:false})
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
@@ -307,6 +309,8 @@ Page({
         }else{
           if(result.data.code == 20001){
             this.setData({isfirst:result.data.first,realprice:this.data.realprice*0.5})
+          }else{
+            this.setData({isfirst:false,realprice:this.data.realprice-10})
           }
           this.setData({payview:true,sureview:false,timeview:false,openview:false})
           if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
@@ -332,7 +336,7 @@ Page({
     console.log("requestOrder",mac)
     wx.request({
       url: app.globalData.host+'/api/order/create',
-      data:{"deviceid":mac,"playerid":app.globalData.openid},
+      data:{"deviceid":mac,"playerid":app.globalData.openid,"realprice":this.data.realprice},
       success: (result) => {
         console.log('requestOrder',result.data)
         if(result.data.code == 20000){
