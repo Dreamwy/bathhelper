@@ -1,6 +1,7 @@
 // miniprogram/pages/index.js
 //deviceqrid=01:00:25:12:20:20
 //deviceqrid=00:08:05:54:80:05
+// 56:80:c7:f8:74:11
 const moment = require('../util/moment.min');
 const app = getApp()
 
@@ -224,11 +225,11 @@ Page({
             deviceinfo:result.data,
             realprice:result.data.Hotel.price
           })
-          if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
+          // if(this.data.deviceinfo.Hotel.payway == "hotelpay"){
             this.checkOrder()
-          }else{
-            this.checkWxOrder()
-          }
+          // }else{
+          //   this.checkWxOrder()
+          // }
           this.openBluetoothAdapter()
         }else{
           wx.showToast({
@@ -332,6 +333,7 @@ Page({
     })
   },
   requestOrder(){
+    wx.showLoading()
     var mac  = this.data.blemac
     console.log("requestOrder",mac)
     wx.request({
@@ -359,7 +361,7 @@ Page({
           icon: "error"
         })
       },
-      complete:(result) => {},
+      complete:(result) => {wx.hideLoading()},
 
     })
   },
@@ -639,12 +641,14 @@ Page({
     this.formWriteData(blesoftv)
   },
   wxpay(){
+    wx.showLoading()
     wx.request({
       url: app.globalData.host+'/api/order/wxpay',
-      data:{"openid":app.globalData.openid,"attach":this.data.blemac},
+      data:{"openid":app.globalData.openid,"attach":this.data.blemac,"realprice":this.data.realprice},
       success: (result) => {
         console.log('wxpay',result.data)
         var out_trade_no = result.data.out_trade_no
+        wx.showLoading()
         wx.requestPayment({
           nonceStr: result.data.nonceStr,
           package: result.data.package,
@@ -661,7 +665,7 @@ Page({
             // 
           },
           fail:(result) => {console.log(result)},
-          complete:(result) => {console.log(result)},
+          complete:(result) => {wx.hideLoading()},
         })
         
       },
