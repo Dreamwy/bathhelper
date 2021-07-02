@@ -2,6 +2,12 @@
 var bleData = ''
 var bleStr = ''
 var bleDataLength = 0
+const blue = require('../util/Bluetooth');
+
+const blemac = 'AT+051R1vv'
+const blename = 'AT+051R9vv'
+
+const bleactive = 'AT+061WS1vv'
 Page({
 
   /**
@@ -76,6 +82,7 @@ Page({
       onlyFromCamera: true,
       success: (res)=> {
         var result = unescape(res.result)
+        //www.anane.net.cn/api/wxqr?deviceqrid=01:00:25:12:20:20
         var deviceqrid = result.substring(result.indexOf('deviceqrid=')+11,result.lastIndexOf('#'))
         console.log(deviceqrid)
         wx.request({
@@ -235,6 +242,10 @@ Page({
               state: true,
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
+                this.formWriteData(bleactive)
+                setInterval(()=> {
+                  this.formWriteData(bleactive)
+               }, 2000);
               }
             })
           }
@@ -246,10 +257,10 @@ Page({
     })
   },
   clickWriteData(event){
-    var command = 'AT+051R1vv'
+    var command = blemac
     switch (parseInt(event.currentTarget.dataset.command)) {
       case 1:
-        command = 'AT+051R1vv'
+        command = blemac
         break;
       case 11:
         command = 'AT+181W1='+writemac.replace(':','')+'vv'
@@ -267,7 +278,7 @@ Page({
         command = 'AT+071W6=1vv'
         break;
       case 9:
-        command = 'AT+051R9vv'
+        command = blename
         break;
       case 99:
         command = 'AT+211W9=llllljjjjjooooovv'
@@ -294,7 +305,7 @@ Page({
     }
   },
   writeBLECharacteristicValue(sendData){
-    var buffer = str2ab(sendData)
+    var buffer = blue.str2ab(sendData)
         wx.writeBLECharacteristicValue({
             deviceId: this._deviceId,
             serviceId: this._serviceId,
@@ -310,9 +321,9 @@ Page({
                   console.log('读取数据成功')
                   // 操作之前先监听，保证第一时间获取数据
                   wx.onBLECharacteristicValueChange((characteristic) => {
-                    console.log("蓝牙接收数据",ab2hex(characteristic.value))
+                    console.log("蓝牙接收数据",blue.ab2hex(characteristic.value))
                     if (characteristic.value.byteLength > 0) {
-                      this.formdBLEData(ab2hex(characteristic.value))
+                      this.formdBLEData(blue.ab2hex(characteristic.value))
                     }
                   })
                 }
@@ -328,77 +339,32 @@ Page({
     if (data.search('41542b') != -1) {
       bleDataLength = 0
       bleData = data
-      var temp = hexCharCodeToStr(data)
+      var temp = blue.hexCharCodeToStr(data)
       bleDataLength = parseInt(temp.substr(3,2))
+      if(bleData.length==bleDataLength*2+10){
+        this.processBLEData(bleData)
+      }
       console.log("蓝牙数据长度：",bleDataLength)
     } else {
       bleData = bleData.concat(data)
-      if(bleData.length*2+6>=bleDataLength+10){
+      if(bleData.length==bleDataLength*2+10){
         this.processBLEData(bleData)
       }
     }
   },
   processBLEData(data) {
-    console.log("蓝牙接收组装完成数据",hexCharCodeToStr(data))
-    var backdata = hexCharCodeToStr(data)
+    console.log("蓝牙接收组装完成数据",blue.hexCharCodeToStr(data))
+    var backdata = blue.hexCharCodeToStr(data)
     this.setData({
       printdata:this.data.printdata+"收到:"+backdata+"\n"
     })
-    if(backdata.search('AT+182B1') != -1){
-      this.formWriteData('AT+182C1='+writemac.replace(':','')+'vv')
+    if(backdata.search('AT\\+[0-9]{2}2C1') != -1){
+      this.formWriteData(blemac)
+    }else if(backdata.search('AT\\+[0-9]{2}2B1') != -1){
+      this.formWriteData(blename)
+    }else if(backdata.search('AT\\+[0-9]{2}2C2') != -1){
+      this.scanCode()
     }
+    
   }
 })
-
-function str2ab(str) {
-  // var data = [0x41, 0x54, 0x2b,0x30,0x36,0x31,0x52,0x31,0x3d,0x0d,0x0a];
-  var buf = new ArrayBuffer(str.length);
-  var dataView = new DataView(buf);
-  var strs = str.split("");
-  var i = 0;
-  for (i; i < strs.length; i++) {
-    dataView.setUint8(i, strs[i].charCodeAt());
-  }
-  console.log(buf)
-  return buf
-}
-
-function inArray(arr, key, val) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i][key] === val) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-// ArrayBuffer转16进度字符串示例
-function ab2hex(buffer) {
-  var hexArr = Array.prototype.map.call(
-    new Uint8Array(buffer),
-    function (bit) {
-      return ('00' + bit.toString(16)).slice(-2)
-    }
-  )
-  return hexArr.join('');
-  // return String.fromCharCode.apply(null, new Uint16Array(buffer));
-}
-
-
-//十六进制转ASCII码
-function hexCharCodeToStr(hexCharCodeStr) {
-  var trimedStr = hexCharCodeStr.trim();
-  var rawStr = trimedStr.substr(0, 2).toLowerCase() === "0x" ? trimedStr.substr(2) : trimedStr;
-  var len = rawStr.length;
-  if (len % 2 !== 0) {
-    alert("存在非法字符!");
-    return "";
-  }
-  var curCharCode;
-  var resultStr = [];
-  for (var i = 0; i < len; i = i + 2) {
-    curCharCode = parseInt(rawStr.substr(i, 2), 16);
-    resultStr.push(String.fromCharCode(curCharCode));
-  }
-  return resultStr.join("");
-}
