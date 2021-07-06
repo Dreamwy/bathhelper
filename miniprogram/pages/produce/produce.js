@@ -255,9 +255,9 @@ Page({
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
                 this.formWriteData(bleactive)
-              //   setInterval(()=> {
-              //     this.formWriteData(bleactive)
-              //  }, 2000);
+                setInterval(()=> {
+                  this.formWriteData(bleactive)
+               }, 2000);
               }
             })
           }
@@ -301,9 +301,9 @@ Page({
     this.formWriteData(command)
   },
   formWriteData(command) {
-    this.setData({
-      printdata:this.data.printdata+"发送:"+command+"\n"
-    })
+    // this.setData({
+    //   printdata:this.data.printdata+"发送:"+command+"\n"
+    // })
     console.log("写入数据",command,command.length)
     if(command.length>20){
       var count  = Math.ceil(command.length/20)
