@@ -616,9 +616,9 @@ Page({
     let t = backdata.substr(9,4)
     console.log("时间",t)
     //上报上次使用时长
-    if(parseInt(t)<=0){
-      return
-    }
+    // if(parseInt(t)<=0){
+    //   return
+    // }
     wx.request({
       url: app.globalData.host+'/api/order/updatelastrecord',
       data:{"did":this.data.blemac,

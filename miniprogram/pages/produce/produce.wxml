@@ -1,13 +1,5 @@
 <!--miniprogram/pages/produce.wxml-->
-<wxs module="utils">
-module.exports.max = function(n1, n2) {
-  return Math.max(n1, n2)
-}
-module.exports.len = function(arr) {
-  arr = arr || []
-  return arr.length
-}
-</wxs>
+
 <view class="main">
 <button bindtap="openBluetoothAdapter" size="mini" type="primary">开始扫描</button>
 <button bindtap="stopBluetoothDevicesDiscovery" size="mini" type="primary" >停止扫描</button>

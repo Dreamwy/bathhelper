@@ -1,6 +1,7 @@
 /* miniprogram/pages/produce.wxss */
 
 .main{
+  margin-top: 50px;
   display: flex;
   flex-direction: row;
   justify-content: center;

@@ -6,7 +6,8 @@ const blue = require('../util/Bluetooth');
 
 const blemac = 'AT+051R1vv'
 const blename = 'AT+051R9vv'
-
+const blesuccess = 'AT+71A1=1vv'
+const blefail = 'AT+71A1=0vv'
 const bleactive = 'AT+061WS1vv'
 Page({
 
@@ -14,6 +15,10 @@ Page({
    * 页面的初始数据
    */
   data: {
+    mac:'',
+    blename:'',
+    code:'',
+    deviceid:'',
     devices: [],
     connected: false,
     chs: [],
@@ -83,18 +88,24 @@ Page({
       success: (res)=> {
         var result = unescape(res.result)
         //www.anane.net.cn/api/wxqr?deviceqrid=01:00:25:12:20:20
-        var deviceqrid = result.substring(result.indexOf('deviceqrid=')+11,result.lastIndexOf('#'))
+        var deviceqrid = result.substr(result.indexOf('deviceqrid=')+11,17)
         console.log(deviceqrid)
         wx.request({
-          url: getApp().globalData.host+'/api/getmac',
-          data:{"deviceqrid":deviceqrid},
+          url: getApp().globalData.host+'/api/createmac',
+          data:{"deviceqrid":deviceqrid,"mac":this.data.mac,"blename":this.data.blename},
           success: (result) => {
-            this.setData({
-              printdata:"mac:"+result.data.mac+"二维码:"+result.data.deviceqrid+"蓝牙名称:"+result.data.blename+"\n",
-              writemac:result.data.mac,
-              writename:result.data.blename
-            })
-            console.log(result.data)
+            if(result.data.code == 20000){
+              this.setData({
+                printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n",
+                writemac:this.data.mac,
+                writename:this.data.blename
+              })
+              this.formWriteData(blesuccess)
+            }else{
+              this.formWriteData(blefail)
+            }
+            
+            
           }
         })
       }
@@ -359,12 +370,33 @@ Page({
       printdata:this.data.printdata+"收到:"+backdata+"\n"
     })
     if(backdata.search('AT\\+[0-9]{2}2C1') != -1){
+      //串口 c1 读Mac 读 设备名
       this.formWriteData(blemac)
-    }else if(backdata.search('AT\\+[0-9]{2}2B1') != -1){
+    }else if(backdata.search('AT\\+[0-9]{2}2A1') != -1){
+      //MaC
+      parseMac(backdata)
       this.formWriteData(blename)
+    }else if(backdata.search('AT\\+[0-9]{2}2A9') != -1){
+      //设备名称
+      parseName(backdata)
+      this.formWriteData(blesuccess)
+      // this.formWriteData(blename)
     }else if(backdata.search('AT\\+[0-9]{2}2C2') != -1){
+      //扫码
       this.scanCode()
     }
+    //  else if(backdata.search('AT\\+[0-9]{2}2C3') != -1){
+
+    // }
     
+  },
+  parseMac(backdata){
+    let m = backdata.substr(9,10)
+    this.setData({mac:m})
+  },
+  parseName(backdata){
+    let l = backdata.substr(3,2)
+    let n = backdata.substr(9,parseInt(l)-5)
+    this.setData({blename:n})
   }
 })
