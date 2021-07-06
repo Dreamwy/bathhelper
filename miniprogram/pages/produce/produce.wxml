@@ -1,4 +1,14 @@
 <!--miniprogram/pages/produce.wxml-->
+<!--miniprogram/pages/produce.wxml-->
+<wxs module="utils">
+module.exports.max = function(n1, n2) {
+  return Math.max(n1, n2)
+}
+module.exports.len = function(arr) {
+  arr = arr || []
+  return arr.length
+}
+</wxs>
 
 <view class="main">
 <button bindtap="openBluetoothAdapter" size="mini" type="primary">开始扫描</button>
@@ -25,8 +35,8 @@
 <text>已连接到 {{name}}</text>
 <view class="main">
       <button bindtap="scanCode" type="primary" size="mini">扫码</button>
-      <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">写mac</button>
-      <button bindtap="scanCode" type="primary" size="mini">写设备名称</button>
+      <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">读mac</button>
+      <button bindtap="clickWriteData" data-command='9' type="primary" size="mini">读蓝牙名称</button>
 </view>
 <scroll-view class="device_list" scroll-y scroll-with-animation>
   <text> {{printdata}}</text>

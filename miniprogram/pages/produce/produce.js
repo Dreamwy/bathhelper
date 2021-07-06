@@ -17,7 +17,7 @@ Page({
   data: {
     mac:'',
     blename:'',
-    code:'',
+    deviceqrid:'',
     deviceid:'',
     devices: [],
     connected: false,
@@ -89,6 +89,9 @@ Page({
         var result = unescape(res.result)
         //www.anane.net.cn/api/wxqr?deviceqrid=01:00:25:12:20:20
         var deviceqrid = result.substr(result.indexOf('deviceqrid=')+11,17)
+        this.setData({
+          "deviceqrid":deviceqrid
+        })
         console.log(deviceqrid)
         wx.request({
           url: getApp().globalData.host+'/api/createmac',
@@ -96,9 +99,7 @@ Page({
           success: (result) => {
             if(result.data.code == 20000){
               this.setData({
-                printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n",
-                writemac:this.data.mac,
-                writename:this.data.blename
+                printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
               })
               this.formWriteData(blesuccess)
             }else{
@@ -254,9 +255,9 @@ Page({
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
                 this.formWriteData(bleactive)
-                setInterval(()=> {
-                  this.formWriteData(bleactive)
-               }, 2000);
+              //   setInterval(()=> {
+              //     this.formWriteData(bleactive)
+              //  }, 2000);
               }
             })
           }
@@ -370,18 +371,20 @@ Page({
       printdata:this.data.printdata+"收到:"+backdata+"\n"
     })
     if(backdata.search('AT\\+[0-9]{2}2C1') != -1){
+      this.setData({mac:'',blename:''})
       //串口 c1 读Mac 读 设备名
       this.formWriteData(blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A1') != -1){
       //MaC
-      parseMac(backdata)
+      this.parseMac(backdata)
       this.formWriteData(blename)
     }else if(backdata.search('AT\\+[0-9]{2}2A9') != -1){
       //设备名称
-      parseName(backdata)
+      this.parseName(backdata)
       this.formWriteData(blesuccess)
       // this.formWriteData(blename)
     }else if(backdata.search('AT\\+[0-9]{2}2C2') != -1){
+      this.setData({deviceqrid:''})
       //扫码
       this.scanCode()
     }
@@ -391,12 +394,22 @@ Page({
     
   },
   parseMac(backdata){
-    let m = backdata.substr(9,10)
+    let m = backdata.substr(9,12)
+    console.log(m)
     this.setData({mac:m})
   },
   parseName(backdata){
     let l = backdata.substr(3,2)
     let n = backdata.substr(9,parseInt(l)-5)
+    console.log(n)
     this.setData({blename:n})
   }
 })
+function inArray(arr, key, val) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][key] === val) {
+      return i;
+    }
+  }
+  return -1;
+}
