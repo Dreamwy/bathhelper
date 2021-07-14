@@ -40,7 +40,9 @@ Page({
     lefttime:0,
     plan:0,
     isfirst:false,
-    realprice:0
+    realprice:0,
+    discountTicket:{},
+    sellTicket:{}
   },
 
   /**
@@ -91,6 +93,7 @@ Page({
             success: (result) => {
               console.log('wxlogin',result.data)
               app.globalData.openid = result.data.openid
+              app.globalData.unionid = result.data.unionid
               if(options.q !=null){
                 var url = decodeURIComponent(options.q)
                 var deviceqrid= url.substring(url.indexOf('deviceqrid=')+11)
@@ -341,6 +344,9 @@ Page({
       url: app.globalData.host+'/api/order/create',
       data:{"deviceid":mac,"playerid":app.globalData.openid,"realprice":this.data.realprice},
       success: (result) => {
+        wx.request({
+          url: 'https://s.anane.cn/api/xcx/index.aspx?opt=addUserCoupon',
+          data:{"unionid":app.globalData.unionid,"hotelCode":this.data.deviceinfo.Hotel.id,"hotelName":this.data.deviceinfo.Hotel.name,"shareratio":this.data.deviceinfo.Hotel.selldivide}})
         console.log('requestOrder',result.data)
         if(result.data.code == 20000){
           this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:result.data.order.id})
@@ -595,6 +601,9 @@ Page({
       })
       this.getTime()
       this.setData({payview:false,sureview:false,timeview:true,openview:false})
+      wx.request({
+        url: 'https://s.anane.cn/api/xcx/index.aspx?opt=getShoppingCoupon',
+        data:{"unionid":app.globalData.unionid}})
       //设备启动
       // this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
@@ -661,6 +670,9 @@ Page({
       url: app.globalData.host+'/api/order/wxpay',
       data:{"openid":app.globalData.openid,"attach":this.data.blemac,"realprice":this.data.realprice},
       success: (result) => {
+        wx.request({
+          url: 'https://s.anane.cn/api/xcx/index.aspx?opt=addUserCoupon',
+          data:{"unionid":app.globalData.unionid,"hotelCode":this.data.deviceinfo.Hotel.id,"hotelName":this.data.deviceinfo.Hotel.name,"shareratio":this.data.deviceinfo.Hotel.selldivide}})
         console.log('wxpay',result.data)
         var out_trade_no = result.data.out_trade_no
         wx.showLoading()

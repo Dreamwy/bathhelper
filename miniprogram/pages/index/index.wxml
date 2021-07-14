@@ -47,7 +47,16 @@
     <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">小项搓背服务代金券</text>
   <text class="text8" style="position: absolute; left: 199rpx; top: 53rpx">再次使用自动抵扣</text>
   </view>
-  
+  <view class=".bg2" style="width: 550rpx; top:10rpx;height:100rpx; display: flex; box-sizing: border-box;">
+    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 8rpx">{{discountTicket.price}}折</text>
+    <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">{{discountTicket.title}}</text>
+  <text class="text8" style="position: absolute; left: 199rpx; top: 53rpx">{{discountTicket.content}}</text>
+  </view>
+  <view class=".bg2" style="width: 550rpx; top:10rpx;height:100rpx; display: flex; box-sizing: border-box;">
+    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 8rpx">¥{{sellTicket.price}}</text>
+    <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">{{sellTicket.title}}</text>
+  <text class="text8" style="position: absolute; left: 199rpx; top: 53rpx">{{sellTicket.content}}</text>
+  </view>
 </view>
 <view wx:if="{{openview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">
   <text class="text1" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;  top: 108rpx; width: 400rpx; height: 50rpx">正在打开搓背机</text>
