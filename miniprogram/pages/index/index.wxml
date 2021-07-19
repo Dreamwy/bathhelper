@@ -78,3 +78,9 @@
 <text>{{deviceinfo.Hotel.payway}}</text>
 <text>{{deviceinfo.aaa}}</text>
 </view>
+
+<view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+
+<view class="modalDlg" wx:if="{{ishowads}}">
+ <image style="width: 100%; height:100%;"src="../../images/ads.jpg" bindtap="jump"/>
+</view>

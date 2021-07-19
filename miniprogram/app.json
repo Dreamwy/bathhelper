@@ -21,7 +21,7 @@
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "搓澡机",
     "navigationBarTextStyle": "black",
-    "navigationStyle":"custom"
+    "navigationStyle": "custom"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

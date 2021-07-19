@@ -8,7 +8,14 @@ const blemac = 'AT+051R1vv'
 const blename = 'AT+051R9vv'
 const blesuccess = 'AT+71A1=1vv'
 const blefail = 'AT+71A1=0vv'
-const bleactive = 'AT+061WS1vv'
+const bleactiveStart = 'AT+071WS1='  //0待机 1 正在 2 陈宫 3 超时    K mac nmae  M二维码  N上传
+var bleactiveK = 0
+var bleactiveM = 0
+var bleactiveN = 0
+var bleactive = bleactiveStart+bleactiveK+bleactiveM+bleactiveN
+var timeK = ''
+var timeM = ''
+var timeN = ''
 Page({
 
   /**
@@ -96,7 +103,14 @@ Page({
         this.setData({
           printdata:this.data.printdata+"二维码:"+deviceqrid+"\n"
         })
-      }
+        bleactiveM = 2
+      },
+      fail:(res)=>{
+        bleactiveM = 3
+      },
+      complete:(result) => {
+        clearTimeout(timeM)
+      },
     })
   },
   openBluetoothAdapter() {
@@ -244,7 +258,7 @@ Page({
                 this.formWriteData(bleactive)
                 setInterval(()=> {
                   this.formWriteData(bleactive)
-               }, 2000);
+               }, 500);
               }
             })
           }
@@ -360,27 +374,53 @@ Page({
     if(backdata.search('AT\\+[0-9]{2}2O1') != -1){
       this.setData({mac:'',blename:''})
       //串口 c1 读Mac 读 设备名
+      timeK = setTimeout(()=>{
+        bleactiveK = 3
+        setTimeout(()=>{
+          bleactiveK = 0
+        }, 4000)
+      }, 4000)
       this.formWriteData(blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A1') != -1){
       //MaC
+      bleactiveK = 1
       this.parseMac(backdata)
       this.formWriteData(blename)
     }else if(backdata.search('AT\\+[0-9]{2}2A9') != -1){
       //设备名称
+      bleactiveK = 1
       this.parseName(backdata)
       this.formWriteData(blesuccess)
+      clearTimeout(timeK)
+      bleactiveK = 2
       // this.formWriteData(blename)
     }else if(backdata.search('AT\\+[0-9]{2}2O2') != -1){
       this.setData({deviceqrid:''})
       //扫码
+      bleactiveM = 1
+      timeM = setTimeout(()=>{
+        bleactiveM = 3
+        setTimeout(()=>{
+          bleactiveM = 0
+        }, 4000)
+      }, 4000)
       this.scanCode()
-    }else if(backdata.search('AT\\+[0-9]{2}2O5') != -1){
+    }else if(backdata.search('AT\\+[0-9]{2}2O4') != -1){
+      bleactiveN = 1
       this.upload()
+    }else if(backdata.search('AT\\+[0-9]{2}2O0') != -1){
+       this.clear()
+      this.formWriteData(blesuccess)
     }
     //  else if(backdata.search('AT\\+[0-9]{2}2C3') != -1){
 
     // }
     
+  },
+  clear(){
+    bleactiveK = 0
+    bleactiveM = 0
+    bleactiveN = 0
   },
   parseMac(backdata){
     let m = backdata.substr(9,12)
@@ -394,19 +434,32 @@ Page({
     this.setData({blename:n})
   },
   upload(){
+    timeN = setTimeout(()=>{
+      bleactiveN = 3
+      setTimeout(()=>{
+        bleactiveN = 0
+      }, 4000)
+    }, 4000)
     wx.request({
       url: getApp().globalData.host+'/api/createmac',
-      data:{"deviceqrid":deviceqrid,"mac":this.data.mac,"blename":this.data.blename},
+      data:{"deviceqrid":this.data.deviceqrid,"mac":this.data.mac,"blename":this.data.blename},
       success: (result) => {
         if(result.data.code == 20000){
+          bleactiveN = 2
           this.setData({
             printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
           })
           this.formWriteData(blesuccess)
+          this.clear()
         }else{
           this.formWriteData(blefail)
+          bleactiveN = 3
         }
-      }
+      },
+      fail:(res)=>{
+        bleactiveN = 3
+      },
+      complete:(result) => {clearTimeout(timeN)},
     })
   }
 })

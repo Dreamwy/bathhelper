@@ -38,6 +38,7 @@ module.exports.len = function(arr) {
       <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">读mac</button>
       <button bindtap="clickWriteData" data-command='9' type="primary" size="mini">读蓝牙名称</button>
       <button bindtap="upload"  type="primary" size="mini">上传</button>
+      <button bindtap="clear"  type="primary" size="mini">清空</button>
 </view>
 <scroll-view class="device_list" scroll-y scroll-with-animation>
   <text> {{printdata}}</text>

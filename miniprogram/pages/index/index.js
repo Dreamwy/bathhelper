@@ -18,6 +18,8 @@ const blestate = 'AT+051R5vv'
 const blesoftv = 'AT+051R4vv'
 const bletime = 'AT+051R8vv'
 const bleactive = 'AT+061WS1vv'
+var ishowads = true
+
 Page({
 
   /**
@@ -42,7 +44,8 @@ Page({
     isfirst:false,
     realprice:0,
     discountTicket:{},
-    sellTicket:{}
+    sellTicket:{},
+    modalHidden: false
   },
 
   /**
@@ -52,6 +55,14 @@ Page({
     // var obj = wx.getLaunchOptionsSync()
     // console.log(obj)
     // this.requestMac(options)
+    this.setData({
+      ishowads: true
+    })
+    setTimeout(()=>{
+      this.setData({
+        ishowads: false
+      })
+    }, 3000)
 
     if (app.globalData.userInfo) {
       this.setData({
@@ -102,7 +113,6 @@ Page({
                 }
               }else{
                 this.requestMac(options.deviceqrid)
-                // this.jump()
               }
             }
           })
@@ -125,7 +135,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    this.jump()
   },
 
   /**
@@ -347,6 +357,14 @@ Page({
     })
   },
   requestOrder(){
+    if(!isConnect){
+      wx.showToast({
+        title: "连接设备失败,请检查手机蓝牙",
+        duration: 2000,
+        icon: "error"
+      })
+      return
+    }
     wx.showLoading()
     var mac  = this.data.blemac
     console.log("requestOrder",mac)
@@ -427,7 +445,7 @@ Page({
       fail:(res)=>{
         wx.showToast({
           title: "请打开蓝牙",
-          duration: 1000,
+          duration: 2000,
           icon: "error"
         })
       }
@@ -492,6 +510,7 @@ Page({
         this.setData({
           connected: true
         })
+        isConnect = true
         this.getBLEDeviceServices(deviceId)
       },
       fail:(res)=>{
@@ -518,7 +537,7 @@ Page({
       fail:(res)=>{
         wx.showToast({
           title: "获取服务失败",
-          duration: 1000,
+          duration: 2000,
           icon: "error"
         })
       },
@@ -651,6 +670,10 @@ Page({
       },
       success: (result) => {
         console.log('updatelastrecord',result.data)
+      },
+      fail:(res)=>{
+      },
+      complete:(r)=>{
         wx.request({
           url: app.globalData.host+'/api/order/createrecord',
           data:{"deviceid":this.data.blemac,"playerid":app.globalData.openid,"orderid":this.data.orderid},
@@ -660,8 +683,6 @@ Page({
           fail:(res)=>{
           }
         })
-      },
-      fail:(res)=>{
       }
     })
   },
@@ -681,6 +702,14 @@ Page({
     this.formWriteData(blesoftv)
   },
   wxpay(){
+    if(!isConnect){
+      wx.showToast({
+        title: "连接设备失败,请检查手机蓝牙",
+        duration: 2000,
+        icon: "error"
+      })
+      return
+    }
     wx.showLoading()
     wx.request({
       url: app.globalData.host+'/api/order/wxpay',
