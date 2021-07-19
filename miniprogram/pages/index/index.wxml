@@ -41,21 +41,21 @@
   <text class="text6"  style="font-size: 30px; display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute; top: 150rpx">{{lefttime}}</text>
   <text class="text8" style="display: flex; box-sizing: border-box; text-align: center; align-items: center; justify-content: center; position: absolute;top: 250rpx">温馨提示：24小时内微信扫码开机即可使用</text>
 </view>
-<view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height:300rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -30rpx; position: relative;justify-content: center;display:flex;">
-  <view class=".bg2" style="width: 550rpx; top:10rpx;height:100rpx; display: flex; box-sizing: border-box;">
-    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 8rpx">¥10</text>
-    <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">小项搓背服务代金券</text>
-  <text class="text8" style="position: absolute; left: 199rpx; top: 53rpx">再次使用自动抵扣</text>
+<view wx:if="{{timeview}}" class=".bg1" style="width: 674rpx; height: 482rpx; display: flex; box-sizing: border-box; left: 37rpx; top: -30rpx; position: relative; justify-content: center; flex-direction: column; align-items: center">
+  <view class=".bg2" style="width: 550rpx; top: -21rpx; height: 140rpx; display: flex; box-sizing: border-box; position: relative; left: 0rpx">
+    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 31rpx">¥10</text>
+    <text class="text1" style="position: absolute; left: 199rpx; top: 21rpx">小项搓背服务代金券</text>
+  <text class="text8" style="position: absolute; left: 199rpx; top: 66rpx">再次使用自动抵扣</text>
   </view>
-  <view class=".bg2" style="width: 550rpx; top:10rpx;height:100rpx; display: flex; box-sizing: border-box;">
-    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 8rpx">{{discountTicket.price}}折</text>
+  <view class=".bg2" bindtap="jump" style="width: 550rpx; top: 10rpx; height: 140rpx; display: flex; box-sizing: border-box; left: 0rpx">
+    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 31rpx">{{discountTicket.price}}折</text>
     <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">{{discountTicket.title}}</text>
-  <text class="text8" style="position: absolute; left: 199rpx; top: 53rpx">{{discountTicket.content}}</text>
+  <text class="text8" style="position: absolute; left: 199rpx; word-wrap: break-word; word-break: break-all; white-space: pre-line; top: 53rpx; width: 334rpx; height: 73rpx; display: block; box-sizing: border-box">{{discountTicket.content}}</text>
   </view>
-  <view class=".bg2" style="width: 550rpx; top:10rpx;height:100rpx; display: flex; box-sizing: border-box;">
-    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 8rpx">¥{{sellTicket.price}}</text>
+  <view class=".bg2" bindtap="jump" style="width: 550rpx; top: 30rpx; height: 140rpx; display: flex; box-sizing: border-box; position: relative; left: 0rpx">
+    <text class="text3" style="position: absolute; text-align: center; height: 40px; left: 2rpx; top: 31rpx">¥{{sellTicket.price}}</text>
     <text class="text1" style="position: absolute; left: 193rpx; top: 8rpx">{{sellTicket.title}}</text>
-  <text class="text8" style="position: absolute; left: 199rpx; top: 53rpx">{{sellTicket.content}}</text>
+  <text class="text8" style="position: absolute; left: 199rpx; word-wrap: break-word; word-break: break-all; white-space: pre-line;top: 53rpx">{{sellTicket.content}}</text>
   </view>
 </view>
 <view wx:if="{{openview}}" class=".bg1" style="width: 674rpx; height: 534rpx; display: flex; box-sizing: border-box; left: 38rpx; top: -50rpx; position: relative;align-items:center;justify-content: center;display:flex;">

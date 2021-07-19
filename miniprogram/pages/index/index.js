@@ -102,6 +102,7 @@ Page({
                 }
               }else{
                 this.requestMac(options.deviceqrid)
+                // this.jump()
               }
             }
           })
@@ -303,7 +304,16 @@ Page({
       success: (result) => {
         console.log('checkorder',result.data)
         if(result.data.code == 20000){
-          this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:result.data.order.id})
+          this.setData({payview:false,sureview:false,timeview:true,openview:false,orderid:result.data.order.id})
+          wx.request({
+            url: 'https://s.anane.cn/api/xcx/index.aspx?opt=getShoppingCoupon',
+            data:{"unionid":app.globalData.unionid},
+            success: (result) => {
+              console.log('getShoppingCoupon',result.data)
+              this.setData({discountTicket:result.data[0],sellTicket:result.data[1]})
+            },
+            fail:(res)=>{
+            }})
           // this.setData({payview:false,sureview:false,timeview:true,hotelorder:result.data.order})
           // (1000*60*60*24)-
           var a = moment().valueOf()
@@ -603,7 +613,13 @@ Page({
       this.setData({payview:false,sureview:false,timeview:true,openview:false})
       wx.request({
         url: 'https://s.anane.cn/api/xcx/index.aspx?opt=getShoppingCoupon',
-        data:{"unionid":app.globalData.unionid}})
+        data:{"unionid":app.globalData.unionid},
+        success: (result) => {
+          console.log('getShoppingCoupon',result.data)
+          this.setData({discountTicket:result.data[0],sellTicket:result.data[1]})
+        },
+        fail:(res)=>{
+        }})
       //设备启动
       // this.requestOrder(this.data.blemac)
     }else if(backdata.search('AT\\+[0-9]{2}2A5') != -1){
@@ -714,6 +730,11 @@ Page({
       this.writeBLECharacteristicValue(command)
     }
   },
+  jump(){
+    wx.navigateToMiniProgram({
+      appId: "wxf60f683022f39bca"
+    })
+  },
   writeBLECharacteristicValue(sendData){
     var buffer = blue.str2ab(sendData)
         wx.writeBLECharacteristicValue({
@@ -740,6 +761,6 @@ Page({
               })
             }
         })
-  },
+  }
 })
 

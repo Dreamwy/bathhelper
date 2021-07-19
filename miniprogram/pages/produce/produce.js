@@ -93,21 +93,8 @@ Page({
           "deviceqrid":deviceqrid
         })
         console.log(deviceqrid)
-        wx.request({
-          url: getApp().globalData.host+'/api/createmac',
-          data:{"deviceqrid":deviceqrid,"mac":this.data.mac,"blename":this.data.blename},
-          success: (result) => {
-            if(result.data.code == 20000){
-              this.setData({
-                printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
-              })
-              this.formWriteData(blesuccess)
-            }else{
-              this.formWriteData(blefail)
-            }
-            
-            
-          }
+        this.setData({
+          printdata:this.data.printdata+"二维码:"+deviceqrid+"\n"
         })
       }
     })
@@ -370,7 +357,7 @@ Page({
     this.setData({
       printdata:this.data.printdata+"收到:"+backdata+"\n"
     })
-    if(backdata.search('AT\\+[0-9]{2}2C1') != -1){
+    if(backdata.search('AT\\+[0-9]{2}2O1') != -1){
       this.setData({mac:'',blename:''})
       //串口 c1 读Mac 读 设备名
       this.formWriteData(blemac)
@@ -383,10 +370,12 @@ Page({
       this.parseName(backdata)
       this.formWriteData(blesuccess)
       // this.formWriteData(blename)
-    }else if(backdata.search('AT\\+[0-9]{2}2C2') != -1){
+    }else if(backdata.search('AT\\+[0-9]{2}2O2') != -1){
       this.setData({deviceqrid:''})
       //扫码
       this.scanCode()
+    }else if(backdata.search('AT\\+[0-9]{2}2O5') != -1){
+      this.upload()
     }
     //  else if(backdata.search('AT\\+[0-9]{2}2C3') != -1){
 
@@ -403,6 +392,22 @@ Page({
     let n = backdata.substr(9,parseInt(l)-5)
     console.log(n)
     this.setData({blename:n})
+  },
+  upload(){
+    wx.request({
+      url: getApp().globalData.host+'/api/createmac',
+      data:{"deviceqrid":deviceqrid,"mac":this.data.mac,"blename":this.data.blename},
+      success: (result) => {
+        if(result.data.code == 20000){
+          this.setData({
+            printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
+          })
+          this.formWriteData(blesuccess)
+        }else{
+          this.formWriteData(blefail)
+        }
+      }
+    })
   }
 })
 function inArray(arr, key, val) {
