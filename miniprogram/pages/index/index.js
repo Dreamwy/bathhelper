@@ -19,6 +19,7 @@ const blesoftv = 'AT+051R4vv'
 const bletime = 'AT+051R8vv'
 const bleactive = 'AT+061WS1vv'
 var ishowads = true
+var isConnect = false
 
 Page({
 
@@ -113,6 +114,7 @@ Page({
                 }
               }else{
                 this.requestMac(options.deviceqrid)
+                // this.jump()
               }
             }
           })
@@ -314,7 +316,7 @@ Page({
       success: (result) => {
         console.log('checkorder',result.data)
         if(result.data.code == 20000){
-          this.setData({payview:false,sureview:false,timeview:true,openview:false,orderid:result.data.order.id})
+          this.setData({payview:false,sureview:true,timeview:false,openview:false,orderid:result.data.order.id})
           wx.request({
             url: 'https://s.anane.cn/api/xcx/index.aspx?opt=getShoppingCoupon',
             data:{"unionid":app.globalData.unionid},
@@ -761,7 +763,7 @@ Page({
   },
   jump(){
     wx.navigateToMiniProgram({
-      appId: "wxf60f683022f39bca"
+      appId: "wxf60f683022f39bca",
     })
   },
   writeBLECharacteristicValue(sendData){

@@ -8,7 +8,7 @@ const blemac = 'AT+051R1vv'
 const blename = 'AT+051R9vv'
 const blesuccess = 'AT+71A1=1vv'
 const blefail = 'AT+71A1=0vv'
-const bleactiveStart = 'AT+071WS1='  //0待机 1 正在 2 陈宫 3 超时    K mac nmae  M二维码  N上传
+const bleactiveStart = 'AT+081WS2='  //0待机 1 正在 2 成功 3 超时    K mac name  M二维码  N上传
 var bleactiveK = 0
 var bleactiveM = 0
 var bleactiveN = 0
@@ -90,6 +90,12 @@ Page({
 
   },
   scanCode(){
+    timeM = setTimeout(()=>{
+      bleactiveM = 3
+      setTimeout(()=>{
+        bleactiveM = 0
+      }, 4000)
+    }, 4000)
     wx.scanCode({
       onlyFromCamera: true,
       success: (res)=> {
@@ -398,12 +404,6 @@ Page({
       this.setData({deviceqrid:''})
       //扫码
       bleactiveM = 1
-      timeM = setTimeout(()=>{
-        bleactiveM = 3
-        setTimeout(()=>{
-          bleactiveM = 0
-        }, 4000)
-      }, 4000)
       this.scanCode()
     }else if(backdata.search('AT\\+[0-9]{2}2O4') != -1){
       bleactiveN = 1
@@ -421,6 +421,9 @@ Page({
     bleactiveK = 0
     bleactiveM = 0
     bleactiveN = 0
+    this.setData({
+      printdata:this.data.printdata+bleactive+"\n"
+    })
   },
   parseMac(backdata){
     let m = backdata.substr(9,12)
@@ -449,14 +452,29 @@ Page({
           this.setData({
             printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
           })
+          wx.showToast({
+            title: "上传成功",
+            duration: 2000,
+            icon: "success"
+          })
           this.formWriteData(blesuccess)
           this.clear()
         }else{
           this.formWriteData(blefail)
           bleactiveN = 3
+          wx.showToast({
+            title: "上传失败",
+            duration: 2000,
+            icon: "error"
+          })
         }
       },
       fail:(res)=>{
+        wx.showToast({
+          title: "上传失败",
+          duration: 2000,
+          icon: "error"
+        })
         bleactiveN = 3
       },
       complete:(result) => {clearTimeout(timeN)},
