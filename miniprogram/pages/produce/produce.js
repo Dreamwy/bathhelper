@@ -12,7 +12,6 @@ const bleactiveStart = 'AT+081WS2='  //0待机 1 正在 2 成功 3 超时    K m
 var bleactiveK = 0
 var bleactiveM = 0
 var bleactiveN = 0
-var bleactive = bleactiveStart+bleactiveK+bleactiveM+bleactiveN
 var timeK = ''
 var timeM = ''
 var timeN = ''
@@ -38,7 +37,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
   },
 
   /**
@@ -261,9 +259,14 @@ Page({
               state: true,
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
-                this.formWriteData(bleactive)
                 setInterval(()=> {
-                  this.formWriteData(bleactive)
+                  var buffer = blue.str2ab(bleactiveStart+bleactiveK+bleactiveM+bleactiveN)
+                  wx.writeBLECharacteristicValue({
+                      deviceId: this._deviceId,
+                      serviceId: this._serviceId,
+                      characteristicId: this._characteristicId,
+                      value: buffer
+                  })
                }, 500);
               }
             })
@@ -307,6 +310,7 @@ Page({
     }
     this.formWriteData(command)
   },
+
   formWriteData(command) {
     // this.setData({
     //   printdata:this.data.printdata+"发送:"+command+"\n"
@@ -452,6 +456,7 @@ Page({
           this.setData({
             printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
           })
+          this.setData({mac:'',blename:'', deviceqrid:''})
           wx.showToast({
             title: "上传成功",
             duration: 2000,

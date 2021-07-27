@@ -582,7 +582,14 @@ Page({
                 console.log('开启notify成功' + this._characteristicId)
                 this.formWriteData(bleactive)
                 setInterval(()=> {
-                  this.formWriteData(bleactive)
+                  var buffer = blue.str2ab(bleactive)
+                  wx.writeBLECharacteristicValue({
+                      deviceId: this._deviceId,
+                      serviceId: this._serviceId,
+                      characteristicId: this._characteristicId,
+                      value: buffer
+                  })
+
                }, 2000);
                 setTimeout(()=>{
                   this.formWriteData(blestate)

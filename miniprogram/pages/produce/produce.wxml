@@ -35,8 +35,7 @@ module.exports.len = function(arr) {
 <text>已连接到 {{name}}</text>
 <view class="main">
       <button bindtap="scanCode" type="primary" size="mini">扫码</button>
-      <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">读mac</button>
-      <button bindtap="clickWriteData" data-command='9' type="primary" size="mini">读蓝牙名称</button>
+      <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">读mac和名称</button>
       <button bindtap="upload"  type="primary" size="mini">上传</button>
       <button bindtap="clear"  type="primary" size="mini">清空</button>
 </view>
@@ -45,8 +44,9 @@ module.exports.len = function(arr) {
 </scroll-view>
 </view>
   <view>
-    
-    
+  <text> mac:{{mac}}</text>
+  <text> 名称:{{blename}}</text>
+  <text> 二维码{{deviceqrid}}</text>
   </view>
   <view wx:for="{{chs}}" wx:key="index" style="font-size: 12px; margin-top: 10px;">
     <view>特性UUID: {{item.uuid}}</view>
