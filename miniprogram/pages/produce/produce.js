@@ -259,6 +259,7 @@ Page({
               state: true,
               success: (res) => {
                 console.log('开启notify成功' + this._characteristicId)
+                this.formWriteData('aaaa')
                 setInterval(()=> {
                   var buffer = blue.str2ab(bleactiveStart+bleactiveK+bleactiveM+bleactiveN)
                   wx.writeBLECharacteristicValue({
@@ -430,13 +431,22 @@ Page({
     })
   },
   parseMac(backdata){
-    let m = backdata.substr(9,12)
+    var m = backdata.substr(9,12)
+    var result = ""
     console.log(m)
-    this.setData({mac:m})
+    for(let i = 0; i < m.length; i++) {
+      if (i % 2 == 0 && i != 0) {
+          result += ':' + m[i];
+      }
+      else {
+          result += m[i];
+      }
+  }
+    this.setData({mac:result})
   },
   parseName(backdata){
     let l = backdata.substr(3,2)
-    let n = backdata.substr(9,parseInt(l)-5)
+    let n = backdata.substr(9,parseInt(l)-6)
     console.log(n)
     this.setData({blename:n})
   },
@@ -468,7 +478,7 @@ Page({
           this.formWriteData(blefail)
           bleactiveN = 3
           wx.showToast({
-            title: "上传失败",
+            title: result.data.errorMsg,
             duration: 2000,
             icon: "error"
           })
