@@ -485,7 +485,7 @@ Page({
           wx.showToast({
             title: result.data.errorMsg,
             duration: 2000,
-            icon: "error"
+            image: "../../images/error.jpg"
           })
         }
       },
