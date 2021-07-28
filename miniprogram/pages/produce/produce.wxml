@@ -40,10 +40,10 @@ module.exports.len = function(arr) {
       <button bindtap="upload"  type="primary"size="mini" >上传数据</button>
       <button bindtap="clear"  type="primary" size="mini">清空数据</button>
 </view>
-  <view style="display:flex; justify-content:center; align-items:center;flex-direction: column; ">
-  <text style="margin-top:10rpx"> mac:{{mac}}</text>
-  <text style="margin-top:10rpx"> 名称:{{blename}}</text>
-  <text style="margin-top:10rpx"> 二维码{{deviceqrid}}</text>
+<view style="display:flex; justify-content:center; align-items:center;flex-direction: column; ">
+  <text style="margin-top:10rpx;font-size: 22px;"> mac:{{mac}}</text>
+  <text style="margin-top:10rpx;font-size: 22px;"> 名称:{{blename}}</text>
+  <text style="margin-top:10rpx;font-size: 22px;"> 二维码{{deviceqrid}}</text>
   </view>
 
 </view>

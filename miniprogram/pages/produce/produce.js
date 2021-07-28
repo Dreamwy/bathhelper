@@ -426,6 +426,8 @@ Page({
     bleactiveK = 0
     bleactiveM = 0
     bleactiveN = 0
+
+    this.setData({mac:'',blename:'',deviceqrid:''})
     // this.setData({
     //   printdata:this.data.printdata+bleactive+"\n"
     // })
@@ -497,7 +499,6 @@ Page({
       },
       complete:(result) => {
         clearTimeout(timeN)
-        wx.hideLoading()
       },
     })
   }
