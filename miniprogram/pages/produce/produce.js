@@ -104,9 +104,9 @@ Page({
           "deviceqrid":deviceqrid
         })
         console.log(deviceqrid)
-        this.setData({
-          printdata:this.data.printdata+"二维码:"+deviceqrid+"\n"
-        })
+        // this.setData({
+        //   printdata:this.data.printdata+"二维码:"+deviceqrid+"\n"
+        // })
         bleactiveM = 2
       },
       fail:(res)=>{
@@ -379,9 +379,9 @@ Page({
   processBLEData(data) {
     console.log("蓝牙接收组装完成数据",blue.hexCharCodeToStr(data))
     var backdata = blue.hexCharCodeToStr(data)
-    this.setData({
-      printdata:this.data.printdata+"收到:"+backdata+"\n"
-    })
+    // this.setData({
+    //   printdata:this.data.printdata+"收到:"+backdata+"\n"
+    // })
     if(backdata.search('AT\\+[0-9]{2}2O1') != -1){
       this.setData({mac:'',blename:''})
       //串口 c1 读Mac 读 设备名
@@ -426,9 +426,9 @@ Page({
     bleactiveK = 0
     bleactiveM = 0
     bleactiveN = 0
-    this.setData({
-      printdata:this.data.printdata+bleactive+"\n"
-    })
+    // this.setData({
+    //   printdata:this.data.printdata+bleactive+"\n"
+    // })
   },
   parseMac(backdata){
     var m = backdata.substr(9,12)
@@ -457,15 +457,18 @@ Page({
         bleactiveN = 0
       }, 4000)
     }, 4000)
+    wx.showLoading({
+      title: '上传中...',
+    })
     wx.request({
       url: getApp().globalData.host+'/api/createmac',
       data:{"deviceqrid":this.data.deviceqrid,"mac":this.data.mac,"blename":this.data.blename},
       success: (result) => {
         if(result.data.code == 20000){
           bleactiveN = 2
-          this.setData({
-            printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
-          })
+          // this.setData({
+          //   printdata:"mac:"+this.data.mac+"二维码:"+this.data.deviceqrid+"蓝牙名称:"+this.data.blename+"\n"
+          // })
           this.setData({mac:'',blename:'', deviceqrid:''})
           wx.showToast({
             title: "上传成功",
@@ -492,7 +495,10 @@ Page({
         })
         bleactiveN = 3
       },
-      complete:(result) => {clearTimeout(timeN)},
+      complete:(result) => {
+        clearTimeout(timeN)
+        wx.hideLoading()
+      },
     })
   }
 })

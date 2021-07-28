@@ -16,7 +16,7 @@ module.exports.len = function(arr) {
 <button bindtap="closeBluetoothAdapter" size="mini" type="primary">结束流程</button>
 </view>
 
-
+<view class="connected_info" wx:if="{{!connected}}">
 <view class="devices_summary">已发现 {{devices.length}} 个外围设备：</view>
 <scroll-view class="device_list" scroll-y scroll-with-animation>
   <view wx:for="{{devices}}" wx:key="index"
@@ -31,28 +31,30 @@ module.exports.len = function(arr) {
     <view style="font-size: 10px">Service数量: {{utils.len(item.advertisServiceUUIDs)}}</view>
   </view>
 </scroll-view>
+</view>
 <view class="connected_info" wx:if="{{connected}}">
 <text>已连接到 {{name}}</text>
 <view class="main">
-      <button bindtap="scanCode" type="primary" size="mini">扫码</button>
-      <button bindtap="clickWriteData" data-command='1' type="primary" size="mini">读mac和名称</button>
-      <button bindtap="upload"  type="primary" size="mini">上传</button>
-      <button bindtap="clear"  type="primary" size="mini">清空</button>
+      <button bindtap="scanCode" type="primary" size="mini">扫二维码</button>
+      <button bindtap="clickWriteData" data-command='1' type="primary"  size="mini">读mac和名称</button>
+      <button bindtap="upload"  type="primary"size="mini" >上传数据</button>
+      <button bindtap="clear"  type="primary" size="mini">清空数据</button>
 </view>
-<scroll-view class="device_list" scroll-y scroll-with-animation>
-  <text> {{printdata}}</text>
-</scroll-view>
-</view>
-  <view>
-  <text> mac:{{mac}}</text>
-  <text> 名称:{{blename}}</text>
-  <text> 二维码{{deviceqrid}}</text>
+  <view style="display:flex; justify-content:center; align-items:center;flex-direction: column; ">
+  <text style="margin-top:10rpx"> mac:{{mac}}</text>
+  <text style="margin-top:10rpx"> 名称:{{blename}}</text>
+  <text style="margin-top:10rpx"> 二维码{{deviceqrid}}</text>
   </view>
+
+</view>
+
   <view wx:for="{{chs}}" wx:key="index" style="font-size: 12px; margin-top: 10px;">
     <view>特性UUID: {{item.uuid}}</view>
     <view>特性值: {{item.value}}</view>
   </view>
-
+  <scroll-view class="device_list" scroll-y scroll-with-animation>
+  <text> </text>
+</scroll-view>
 
 
 
